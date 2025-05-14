@@ -11,7 +11,7 @@ import it.unibz.inf.pp.clash.view.exceptions.NoGameOnScreenException;
  * It should not appear in the final project.
  */
 public class DummyEventHandler implements EventHandler {
-
+//test branch Nicola
     private final DisplayManager displayManager;
 
     public DummyEventHandler(DisplayManager displayManager) {
