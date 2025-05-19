@@ -3,6 +3,7 @@ package it.unibz.inf.pp.clash.model.impl;
 import it.unibz.inf.pp.clash.model.EventHandler;
 import it.unibz.inf.pp.clash.model.snapshot.impl.dummy.AnotherDummySnapshot;
 import it.unibz.inf.pp.clash.model.snapshot.impl.dummy.DummySnapshot;
+import it.unibz.inf.pp.clash.model.snapshot.impl.dummy.RealSnapshot;
 import it.unibz.inf.pp.clash.view.DisplayManager;
 import it.unibz.inf.pp.clash.view.exceptions.NoGameOnScreenException;
 
@@ -63,7 +64,7 @@ public class DummyEventHandler implements EventHandler {
     @Override
     public void newGame(String firstHero, String secondHero) {
         displayManager.drawSnapshot(
-                new DummySnapshot(
+                new RealSnapshot(
                         firstHero,
                         secondHero
                 ),
