@@ -133,3 +133,6 @@ Thumbs.db
 *.flv
 *.mov
 *.wmv
+
+gradle/wrapper/gradle-wrapper.properties
+gradlew
