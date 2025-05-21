@@ -45,9 +45,28 @@ public abstract class AbstractSnapshot implements Snapshot {
         return activeplayer;
     }
 
+    public void setActivePlayer(Player x) {
+        activeplayer = x;
+    }
+
+    public void setActionsRemaining(int number) {
+        actionsRemaining = number;
+    }
+
+    //creato da danial per eventhandler
+    public int getActionsRemaining() {
+        return actionsRemaining;
+    }
+
+
     @Override
     public Optional<TileCoordinates> getOngoingMove() {
         return Optional.ofNullable(ongoingMove);
+    }
+
+    //creato da danial per eventhandler
+    public void setOngoingMove(TileCoordinates ongoingMove) {
+        this.ongoingMove = ongoingMove;
     }
 
     @Override
