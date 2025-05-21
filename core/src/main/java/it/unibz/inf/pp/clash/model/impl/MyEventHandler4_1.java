@@ -89,11 +89,7 @@ public class MyEventHandler4_1 implements EventHandler {
         //snip di codice per deselezionare cliccando la stessa casella
         if (snapshot.getOngoingMove().get().equals(clickedTile)) {
             snapshot.setOngoingMove(null);
-            try {
-                displayManager.updateMessage("Unit deselected!");
-            } catch (NoGameOnScreenException e) {
-                throw new RuntimeException(e);
-            }
+            displayManager.drawSnapshot(snapshot, "Unit deselected!");
             return;
         }
         //movimento e reset
