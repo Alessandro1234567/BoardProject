@@ -53,10 +53,20 @@ public abstract class AbstractSnapshot implements Snapshot {
         actionsRemaining = number;
     }
 
+    //creato da danial per eventhandler
+    public int getActionsRemaining() {
+        return actionsRemaining;
+    }
+
 
     @Override
     public Optional<TileCoordinates> getOngoingMove() {
         return Optional.ofNullable(ongoingMove);
+    }
+
+    //creato da danial per eventhandler
+    public void setOngoingMove(TileCoordinates ongoingMove) {
+        this.ongoingMove = ongoingMove;
     }
 
     @Override
