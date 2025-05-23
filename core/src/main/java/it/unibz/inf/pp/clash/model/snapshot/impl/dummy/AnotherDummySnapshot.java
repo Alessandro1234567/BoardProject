@@ -78,7 +78,8 @@ public class AnotherDummySnapshot extends AbstractSnapshot implements Snapshot {
         board.addUnit(9, 5, new Fairy(THREE));
         board.addUnit(6, 7, new Butterfly(ONE));
         board.addUnit(7, 7, new Butterfly(ONE));
-        UnitMerger.merge(board);
+
+        UnitMerger.baordHandle(board);
     }
 
     @Override
