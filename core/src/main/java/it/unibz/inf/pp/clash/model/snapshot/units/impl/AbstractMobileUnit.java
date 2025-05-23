@@ -47,4 +47,6 @@ public abstract class AbstractMobileUnit extends AbstractUnit implements MobileU
     public String toString() {
         return "type: " + getClass() + " color: " + color;
     }
+
+    public abstract AbstractMobileUnit createBigVersion();
 }
