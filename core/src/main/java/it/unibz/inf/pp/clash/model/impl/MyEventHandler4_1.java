@@ -4,6 +4,7 @@ import it.unibz.inf.pp.clash.model.EventHandler;
 import it.unibz.inf.pp.clash.model.snapshot.Board;
 import it.unibz.inf.pp.clash.model.snapshot.Snapshot;
 import it.unibz.inf.pp.clash.model.snapshot.impl.dummy.DummySnapshot;
+import it.unibz.inf.pp.clash.model.snapshot.units.MobileUnit;
 import it.unibz.inf.pp.clash.model.snapshot.units.Unit;
 import it.unibz.inf.pp.clash.view.DisplayManager;
 import it.unibz.inf.pp.clash.view.exceptions.NoGameOnScreenException;
@@ -67,6 +68,16 @@ public class MyEventHandler4_1 implements EventHandler {
             Optional<Unit> unitOpt = snapshot.getBoard().getUnit(rowIndex, columnIndex);
             //verifico la presenza di un unità
             if (unitOpt.isPresent()) {
+                //controllo se è mobile 
+                Unit unit = unitOpt.get();
+                if (!(unit instanceof MobileUnit)) {
+                    try {
+                        displayManager.updateMessage("Cannot select static units!");
+                    } catch (NoGameOnScreenException e) {
+                        throw new RuntimeException(e);
+                    }
+                    return;
+                }
                 if (!isOwned(snapshot.getActivePlayer(), rowIndex)) {
                     try {
                         displayManager.updateMessage("Cannot select opponent's unit!");
@@ -96,10 +107,20 @@ public class MyEventHandler4_1 implements EventHandler {
         moveUnit(snapshot.getOngoingMove().get(), clickedTile);
         snapshot.setOngoingMove(null);
         
-        // sposta verso il centro solo se la casella è nel territorio del giocatore
-        if (isOwned(snapshot.getActivePlayer(), clickedTile.rowIndex())) {
-            Optional<Unit> movedUnit = snapshot.getBoard().getUnit(clickedTile.rowIndex(), clickedTile.columnIndex());
-            movedUnit.ifPresent(unit -> moveForward(unit, clickedTile));
+        //Verifica se usare metodo move forward (sfortunatamente c'era un bug che se si selezionava direttamente la prima casella libera
+        //mi spostava la pediana su quella successiva (da migliorare)
+        int direction = snapshot.getActivePlayer() == Snapshot.Player.FIRST ? -1 : 1;
+        int prevRow = clickedTile.rowIndex() + direction;
+        
+        // Verifica se la casella antecedente è vuota e non territorio del giocatore
+        if (isOwned(snapshot.getActivePlayer(), prevRow) &&
+            snapshot.getBoard().getUnit(prevRow, clickedTile.columnIndex()).isEmpty()) {
+
+            // sposta verso il centro solo se la casella è nel territorio del giocatore
+            if (isOwned(snapshot.getActivePlayer(), clickedTile.rowIndex())) {
+                Optional<Unit> movedUnit = snapshot.getBoard().getUnit(clickedTile.rowIndex(), clickedTile.columnIndex());
+                movedUnit.ifPresent(unit -> moveForward(unit, clickedTile));
+            }
         }
     }
     //metodo ausiliario per verificare appartenenza board
