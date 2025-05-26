@@ -44,7 +44,9 @@ public class AnotherDummySnapshot extends AbstractSnapshot implements Snapshot {
         bigFairy.setHealth(15);
         bigFairy.isBigUnit = true;
 
-        //Player 2
+//        //Player 2
+//        board.addUnit(0,0, new Fairy(THREE));
+//        board.addUnit(3,0, new Fairy(THREE));
         board.addUnit(4, 0, new Fairy(THREE));
         board.addUnit(5, 0, new Wall());
         board.addUnit(4, 2, new Unicorn(ONE));
