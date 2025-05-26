@@ -6,6 +6,7 @@ import it.unibz.inf.pp.clash.model.snapshot.Snapshot;
 import it.unibz.inf.pp.clash.model.snapshot.impl.dummy.DummySnapshot;
 import it.unibz.inf.pp.clash.model.snapshot.units.MobileUnit;
 import it.unibz.inf.pp.clash.model.snapshot.units.Unit;
+import it.unibz.inf.pp.clash.model.utils.UnitGenerator;
 import it.unibz.inf.pp.clash.view.DisplayManager;
 import it.unibz.inf.pp.clash.view.exceptions.NoGameOnScreenException;
 
@@ -45,7 +46,9 @@ public class MyEventHandler4_1 implements EventHandler {
 
     @Override
     public void callReinforcement() {
-        // Da implementare con metodo Zago
+        UnitGenerator.populateTiles(snapshot.getActivePlayer(), snapshot.getBoard(), snapshot.getSizeOfReinforcement(snapshot.getActivePlayer()), snapshot.getSizeOfReinforcement(snapshot.getActivePlayer()));
+        displayManager.drawSnapshot(snapshot, "Reinforcement are called");
+
     }
 
     @Override
