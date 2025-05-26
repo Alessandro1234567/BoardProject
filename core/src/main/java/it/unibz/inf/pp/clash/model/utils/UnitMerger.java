@@ -26,7 +26,7 @@ public class UnitMerger {
             mergeToWall(board, coord.x, coord.y);
             System.out.println(coord);
         }
-        //collapse(board, vertMatches, horMatches);
+        collapse(board);
     }
 
     private static boolean areValidMatchingUnits(AbstractMobileUnit au1, AbstractMobileUnit au2, AbstractMobileUnit au3) {
@@ -109,11 +109,7 @@ public class UnitMerger {
         }
         Unit unit = opt.get();
 
-        if (unit instanceof Unit) {
-            AbstractMobileUnit u = (AbstractMobileUnit) unit;
-            return u;
-        }
-        return null;
+        return (Unit) unit;
     }
 
     public static void collapse(Board board) {
@@ -129,6 +125,15 @@ public class UnitMerger {
             for (int row = 0; row <= maxRowIndex; row++) {
                 Unit unit = optToUnit(board.getUnit(row, col));
                 if (unit == null) continue;
+                if (unit instanceof Wall){
+                    walls.add((Wall) unit);
+                }
+                if (unit instanceof AbstractMobileUnit && ((AbstractMobileUnit) unit).getAttackCountdown() != -1){
+                    bigUnits.add((AbstractMobileUnit) unit);
+                } else if (unit instanceof AbstractMobileUnit){
+                    smallUnits.add((AbstractMobileUnit) unit);
+                }
+                board.removeUnit(row, col);
             }
         }
 
