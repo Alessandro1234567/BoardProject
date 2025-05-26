@@ -97,8 +97,7 @@ public class UnitMerger {
         Unit unit = opt.get();
 
         if (unit instanceof AbstractMobileUnit) {
-            AbstractMobileUnit au = (AbstractMobileUnit) unit;
-            return au;
+            return (AbstractMobileUnit) unit;
         }
         return null;
     }
@@ -109,11 +108,7 @@ public class UnitMerger {
         }
         Unit unit = opt.get();
 
-        if (unit instanceof Unit) {
-            AbstractMobileUnit u = (AbstractMobileUnit) unit;
-            return u;
-        }
-        return null;
+        return (AbstractMobileUnit) unit;
     }
 
     public static void collapse(Board board) {
