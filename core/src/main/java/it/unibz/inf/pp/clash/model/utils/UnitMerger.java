@@ -11,7 +11,7 @@ import java.util.Optional;
 
 public class UnitMerger {
 
-    public static void baordHandle(Board board) {
+    public static void baordHandler(Board board) {
         List<Coordinate> vertMatches = findVertMatch(board);
         List<Coordinate> horMatches = findHorMatch(board);
 
@@ -195,7 +195,6 @@ public class UnitMerger {
 
         }
     }
-
 
     public static void mergeToWall(Board board, int row, int col) {
         board.removeUnit(row, col);
