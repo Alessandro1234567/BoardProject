@@ -4,6 +4,7 @@ import it.unibz.inf.pp.clash.model.EventHandler;
 import it.unibz.inf.pp.clash.model.snapshot.Board;
 import it.unibz.inf.pp.clash.model.snapshot.Snapshot;
 import it.unibz.inf.pp.clash.model.snapshot.impl.dummy.DummySnapshot;
+import it.unibz.inf.pp.clash.model.snapshot.impl.dummy.RealSnapshot;
 import it.unibz.inf.pp.clash.model.snapshot.units.MobileUnit;
 import it.unibz.inf.pp.clash.model.snapshot.units.Unit;
 import it.unibz.inf.pp.clash.model.utils.UnitGenerator;
@@ -15,7 +16,7 @@ import java.util.Optional;
 public class MyEventHandler4_1 implements EventHandler {
 
     private final DisplayManager displayManager;
-    private DummySnapshot snapshot;
+    private RealSnapshot snapshot;
 
     public MyEventHandler4_1(DisplayManager displayManager) {
         this.displayManager = displayManager;
@@ -23,8 +24,9 @@ public class MyEventHandler4_1 implements EventHandler {
 
     @Override
     public void newGame(String firstHero, String secondHero) {
+        snapshot = new RealSnapshot(firstHero, secondHero, 7, 10);
         displayManager.drawSnapshot(
-                this.snapshot = new DummySnapshot(firstHero, secondHero),
+                snapshot,
                 "Game has started."
         );
     }
@@ -46,9 +48,18 @@ public class MyEventHandler4_1 implements EventHandler {
 
     @Override
     public void callReinforcement() {
-        UnitGenerator.populateTiles(snapshot.getActivePlayer(), snapshot.getBoard(), snapshot.getSizeOfReinforcement(snapshot.getActivePlayer()), snapshot.getSizeOfReinforcement(snapshot.getActivePlayer()));
-        displayManager.drawSnapshot(snapshot, "Reinforcement are called");
-
+        Snapshot.Player player = snapshot.getActivePlayer();
+        UnitGenerator.populateTiles(
+                player,
+                snapshot.getBoard(),
+                snapshot.getSizeOfReinforcement(player),
+                snapshot.getSizeOfReinforcement(player)
+        );
+        displayManager.drawSnapshot(
+                snapshot,
+                "This is another dummy game snapshot, to test animations."
+        );
+        snapshot.setActionsRemaining(snapshot.getActionsRemaining() - 1);
     }
 
     @Override

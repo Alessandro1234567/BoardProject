@@ -21,9 +21,9 @@ public class RealSnapshot extends AbstractSnapshot implements Snapshot {
         super(
                 new HeroImpl(firstHeroName, 20),
                 new HeroImpl(secondHeroName, 10),
-                BoardImpl.createEmptyBoard(7, 6),
+                BoardImpl.createEmptyBoard(11, 7),
                 Player.FIRST,
-                2,
+                3,
                 null
         );
 //        this.ongoingMove = new TileCoordinates(6, 1);
