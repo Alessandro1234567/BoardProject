@@ -90,19 +90,26 @@ public class UnitMerger {
 //        return vertMatches;
 //    }
 //
-//    public static AbstractMobileUnit optToAbUnit(Optional<Unit> opt) {
-//        if (opt.isEmpty()) {
-//            return null;
-//        }
-//        Unit unit = opt.get();
-//
-//        if (unit instanceof AbstractMobileUnit) {
-//            AbstractMobileUnit au = (AbstractMobileUnit) unit;
-//            return au;
-//        }
-//        return null;
-//    }
+    /*takes a Optional<Unit> opt and returns:
+    - a AbstractMobileUnit if not empty
+    - null if empty
+     */
+    public static AbstractMobileUnit optToAbUnit(Optional<Unit> opt) {
+        if (opt.isEmpty()) {
+            return null;
+        }
+        Unit unit = opt.get();
 
+        if (unit instanceof AbstractMobileUnit) {
+            return (AbstractMobileUnit) unit;
+        }
+        return null;
+    }
+
+    /*takes a Optional<Unit> opt and returns:
+    - a Unit if not empty
+    - null if empty
+     */
     public static Unit optToUnit(Optional<Unit> opt){
         if (opt.isEmpty()) {
             return null;
