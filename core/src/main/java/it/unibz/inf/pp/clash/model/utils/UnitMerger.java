@@ -109,11 +109,7 @@ public class UnitMerger {
         }
         Unit unit = opt.get();
 
-        if (unit instanceof Unit) {
-            AbstractMobileUnit u = (AbstractMobileUnit) unit;
-            return u;
-        }
-        return null;
+        return (Unit) unit;
     }
 
 //    public static void collapse(Board board) {
