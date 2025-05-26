@@ -36,8 +36,34 @@ public class MyEventHandler4_1 implements EventHandler {
         displayManager.drawHomeScreen();
     }
 
+    private void attack() {
+        Snapshot.Player activePlayer = snapshot.getActivePlayer();
+        final int row = snapshot.getBoard().getMaxRowIndex() / 2 + (activePlayer.equals(Snapshot.Player.FIRST) ? 1 : 0);
+        int col = 0;
+
+        for (int i = row; i <= snapshot.getBoard().getMaxColumnIndex(); i++){
+            System.out.println(i);
+            Optional<Unit> optUnit = snapshot.getBoard().getUnit(i,col);
+            if (optUnit.isPresent()){
+                Unit unit = optUnit.get();
+                while (!(unit instanceof MobileUnit) || )
+            }
+
+            if(snapshot.getBoard().getUnit(i,col).isPresent()){
+                if(((MobileUnit) snapshot.getBoard().getUnit(i,col).get()).getAttackCountdown() >= 0){
+                    System.out.println("Big Unit");
+                }else{
+                    System.out.println("Normal Unit");
+                }
+            }else{
+                System.out.println("Empty" + i + " " + j);
+            }
+        }
+    }
+
     @Override
     public void skipTurn() {
+        attack();
         snapshot.setActivePlayer((snapshot.getActivePlayer() == Snapshot.Player.FIRST) ? Snapshot.Player.SECOND : Snapshot.Player.FIRST);
         snapshot.setActionsRemaining(3);
         displayManager.drawSnapshot(
