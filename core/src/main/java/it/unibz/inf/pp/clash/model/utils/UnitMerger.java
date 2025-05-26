@@ -97,46 +97,59 @@ public class UnitMerger {
         Unit unit = opt.get();
 
         if (unit instanceof AbstractMobileUnit) {
-            AbstractMobileUnit au = (AbstractMobileUnit) unit;
-            return au;
+            return (AbstractMobileUnit) unit;
         }
         return null;
     }
 
-    public static Unit optToUnit(Optional<Unit> opt){
-        if (opt.isEmpty()) {
-            return null;
-        }
-        Unit unit = opt.get();
+    public static Unit optToUnit(Optional<Unit> opt) {
+        return opt.orElse(null);
 
-        return (Unit) unit;
     }
 
     public static void collapse(Board board) {
+        int maxColumnIndex = board.getMaxColumnIndex();
+        for (int i = 0; i <= maxColumnIndex; i++) {
+            columnManager(board, i);
+        }
 
-        int maxColIndex = board.getMaxColumnIndex();
-        int maxRowIndex = board.getMaxRowIndex()/2;
+    }
 
+    public static void columnManager(Board board, int col) {
+        int maxRowIndex = board.getMaxRowIndex() / 2;
+        int currentRow = maxRowIndex;
         List<AbstractMobileUnit> smallUnits = new ArrayList<>();
         List<AbstractMobileUnit> bigUnits = new ArrayList<>();
         List<Wall> walls = new ArrayList<>();
 
-        for (int col = 0; col <= maxColIndex; col++) {
-            for (int row = 0; row <= maxRowIndex; row++) {
-                Unit unit = optToUnit(board.getUnit(row, col));
-                if (unit == null) continue;
-                if (unit instanceof Wall){
-                    walls.add((Wall) unit);
-                }
-                if (unit instanceof AbstractMobileUnit && ((AbstractMobileUnit) unit).getAttackCountdown() != -1){
-                    bigUnits.add((AbstractMobileUnit) unit);
-                } else if (unit instanceof AbstractMobileUnit){
-                    smallUnits.add((AbstractMobileUnit) unit);
-                }
-                board.removeUnit(row, col);
+        for (int i = 0; i <= maxRowIndex; i++) {
+            Unit unit = optToUnit(board.getUnit(i, col));
+            if (unit == null) continue;
+            if (unit instanceof Wall) {
+                walls.add((Wall) unit);
             }
+            if (unit instanceof AbstractMobileUnit && ((AbstractMobileUnit) unit).getAttackCountdown() != -1) {
+                bigUnits.add((AbstractMobileUnit) unit);
+            } else if (unit instanceof AbstractMobileUnit) {
+                smallUnits.add((AbstractMobileUnit) unit);
+            }
+            board.removeUnit(i, col);
         }
 
+        for (Wall wall : walls) {
+            board.addUnit(currentRow, col, wall);
+            currentRow--;
+        }
+
+        for (AbstractMobileUnit bigUnit : bigUnits) {
+            board.addUnit(currentRow, col, bigUnit);
+            currentRow--;
+        }
+
+        for (AbstractMobileUnit smallUnit : smallUnits) {
+            board.addUnit(currentRow, col, smallUnit);
+            currentRow--;
+        }
     }
 
     public static void mergeToWall(Board board, int row, int col) {
