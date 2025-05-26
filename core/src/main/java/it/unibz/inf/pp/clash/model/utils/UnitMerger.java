@@ -16,16 +16,16 @@ public class UnitMerger {
         List<Coordinate> horMatches = findHorMatch(board);
 
         do {
-            System.out.println("Vert matches: ");
-            for (Coordinate coord : vertMatches) {
-                mergeToBigUnit(board, coord.x, coord.y);
-                System.out.println(coord);
+            System.out.println("Vertical matches: ");
+            for (Coordinate cord : vertMatches) {
+                mergeToBigUnit(board, cord.x, cord.y);
+                System.out.println(cord);
             }
 
-            System.out.println("Hor matches: ");
-            for (Coordinate coord : horMatches) {
-                mergeToWall(board, coord.x, coord.y);
-                System.out.println(coord);
+            System.out.println("Horizontal matches: ");
+            for (Coordinate cord : horMatches) {
+                mergeToWall(board, cord.x, cord.y);
+                System.out.println(cord);
             }
             collapse(board);
 
