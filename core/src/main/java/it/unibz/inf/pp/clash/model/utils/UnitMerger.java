@@ -15,18 +15,23 @@ public class UnitMerger {
         List<Coordinate> vertMatches = findVertMatch(board);
         List<Coordinate> horMatches = findHorMatch(board);
 
-        System.out.println("Vert matches: ");
-        for (Coordinate coord : vertMatches) {
-            mergeToBigUnit(board, coord.x, coord.y);
-            System.out.println(coord);
-        }
+        do {
+            System.out.println("Vert matches: ");
+            for (Coordinate coord : vertMatches) {
+                mergeToBigUnit(board, coord.x, coord.y);
+                System.out.println(coord);
+            }
 
-        System.out.println("Hor matches: ");
-        for (Coordinate coord : horMatches) {
-            mergeToWall(board, coord.x, coord.y);
-            System.out.println(coord);
-        }
-        collapse(board);
+            System.out.println("Hor matches: ");
+            for (Coordinate coord : horMatches) {
+                mergeToWall(board, coord.x, coord.y);
+                System.out.println(coord);
+            }
+            collapse(board);
+
+            vertMatches = findVertMatch(board);
+            horMatches = findHorMatch(board);
+        } while (!vertMatches.isEmpty() || !horMatches.isEmpty());
     }
 
     private static boolean areValidMatchingUnits(AbstractMobileUnit au1, AbstractMobileUnit au2, AbstractMobileUnit au3) {
@@ -110,19 +115,19 @@ public class UnitMerger {
     public static void collapse(Board board) {
         int maxColumnIndex = board.getMaxColumnIndex();
         for (int i = 0; i <= maxColumnIndex; i++) {
-            columnManager(board, i);
+            columnManagerP2(board, i);
+            columnManagerP1(board, i);
         }
-
     }
 
-    public static void columnManager(Board board, int col) {
+    public static void columnManagerP2(Board board, int col) {
         int maxRowIndex = board.getMaxRowIndex() / 2;
         int currentRow = maxRowIndex;
         List<AbstractMobileUnit> smallUnits = new ArrayList<>();
         List<AbstractMobileUnit> bigUnits = new ArrayList<>();
         List<Wall> walls = new ArrayList<>();
 
-        for (int i = 0; i <= maxRowIndex; i++) {
+        for (int i = maxRowIndex; i >= 0; i--) {
             Unit unit = optToUnit(board.getUnit(i, col));
             if (unit == null) continue;
             if (unit instanceof Wall) {
@@ -151,6 +156,46 @@ public class UnitMerger {
             currentRow--;
         }
     }
+
+    public static void columnManagerP1(Board board, int col) {
+        int maxRowIndex = board.getMaxRowIndex();
+        int currentRow = maxRowIndex / 2 + 1;
+        List<AbstractMobileUnit> smallUnits = new ArrayList<>();
+        List<AbstractMobileUnit> bigUnits = new ArrayList<>();
+        List<Wall> walls = new ArrayList<>();
+
+        for (int i = maxRowIndex / 2 + 1; i <= maxRowIndex; i++) {
+            Unit unit = optToUnit(board.getUnit(i, col));
+            if (unit == null) continue;
+            if (unit instanceof Wall) {
+                walls.add((Wall) unit);
+            }
+            if (unit instanceof AbstractMobileUnit && ((AbstractMobileUnit) unit).getAttackCountdown() != -1) {
+                bigUnits.add((AbstractMobileUnit) unit);
+            } else if (unit instanceof AbstractMobileUnit) {
+                smallUnits.add((AbstractMobileUnit) unit);
+            }
+            board.removeUnit(i, col);
+        }
+
+        for (Wall wall : walls) {
+            board.addUnit(currentRow, col, wall);
+            currentRow++;
+        }
+
+        for (AbstractMobileUnit bigUnit : bigUnits) {
+            board.addUnit(currentRow, col, bigUnit);
+            currentRow++;
+
+        }
+
+        for (AbstractMobileUnit smallUnit : smallUnits) {
+            board.addUnit(currentRow, col, smallUnit);
+            currentRow++;
+
+        }
+    }
+
 
     public static void mergeToWall(Board board, int row, int col) {
         board.removeUnit(row, col);
