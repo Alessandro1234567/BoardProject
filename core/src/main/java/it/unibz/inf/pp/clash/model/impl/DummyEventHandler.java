@@ -17,11 +17,9 @@ import it.unibz.inf.pp.clash.view.exceptions.NoGameOnScreenException;
  */
 public class DummyEventHandler implements EventHandler {
 
-<<<<<<< HEAD
+
     RealSnapshot currentSnapshot;
 
-=======
->>>>>>> Nicola
     private final DisplayManager displayManager;
 
     public DummyEventHandler(DisplayManager displayManager) {
@@ -74,14 +72,7 @@ public class DummyEventHandler implements EventHandler {
     public void newGame(String firstHero, String secondHero) {
         currentSnapshot = new RealSnapshot(firstHero, secondHero, 7, 11);
         displayManager.drawSnapshot(
-<<<<<<< HEAD
                 currentSnapshot,
-=======
-                new AnotherDummySnapshot(
-                        firstHero,
-                        secondHero
-                ),
->>>>>>> Nicola
                 "This is a dummy game snapshot, for demonstration purposes."
         );
     }

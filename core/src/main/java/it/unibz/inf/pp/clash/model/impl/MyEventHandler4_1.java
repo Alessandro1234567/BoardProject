@@ -8,6 +8,7 @@ import it.unibz.inf.pp.clash.model.snapshot.impl.dummy.RealSnapshot;
 import it.unibz.inf.pp.clash.model.snapshot.units.MobileUnit;
 import it.unibz.inf.pp.clash.model.snapshot.units.Unit;
 import it.unibz.inf.pp.clash.model.utils.UnitGenerator;
+import it.unibz.inf.pp.clash.model.utils.UnitMerger;
 import it.unibz.inf.pp.clash.view.DisplayManager;
 import it.unibz.inf.pp.clash.view.exceptions.NoGameOnScreenException;
 
@@ -25,6 +26,7 @@ public class MyEventHandler4_1 implements EventHandler {
     @Override
     public void newGame(String firstHero, String secondHero) {
         snapshot = new RealSnapshot(firstHero, secondHero, 7, 10);
+        UnitMerger.baordHandler(snapshot.getBoard());
         displayManager.drawSnapshot(
                 snapshot,
                 "Game has started."
@@ -37,35 +39,52 @@ public class MyEventHandler4_1 implements EventHandler {
     }
 
     private void attack() {
-        Snapshot.Player activePlayer = snapshot.getActivePlayer();
-        final int cols = snapshot.getBoard().getMaxRowIndex() / 2 + (activePlayer.equals(Snapshot.Player.FIRST) ? 1 : 0);
-        int col = cols;
+        Snapshot.Player active = snapshot.getActivePlayer();
+        Board board = snapshot.getBoard();
+        int maxRow = board.getMaxRowIndex();
+        int midRow = maxRow / 2;
 
-        for (int i = 0; i <= snapshot.getBoard().getMaxColumnIndex(); i++){
-            System.out.println(i + " " + col);
-            Optional<Unit> optUnit = snapshot.getBoard().getUnit(i,col);
-            if (optUnit.isPresent()){
-                Unit unit = optUnit.get();
-                while (!(unit instanceof MobileUnit) || ((MobileUnit) unit).getAttackCountdown() > -1){
+        int startRow = (active == Snapshot.Player.FIRST) ? midRow + 1 : midRow;
+        int dir = active == Snapshot.Player.FIRST ? 1 : -1;
+        int maxCol = board.getMaxColumnIndex();
 
-                    if (((MobileUnit) unit).getAttackCountdown() == 0){
-                        //attack
-                    }
+        for (int col = 0; col <= maxCol; col++) {
+            int r = startRow;
 
-                    if (((MobileUnit) unit).getAttackCountdown() > 0){
-                        unit.setHealth((int) (unit.getHealth() * 0.4));
-                        col = col + 2;
-                    }
+            while (r >= 0 && r <= maxRow) {
+                Optional<Unit> opt = board.getUnit(r, col);
+                if (opt.isEmpty()) break;
 
-                    col++;
-                    Optional<Unit> temp = snapshot.getBoard().getUnit(i,col);
-                    if (temp.isEmpty()) break;
-                    unit = temp.get();
+                Unit u = opt.get();
+                if (!(u instanceof MobileUnit m)) {
+                    r += dir;
+                    continue;
                 }
-                col = cols;
+
+                if (m.getAttackCountdown() < 0) break;
+
+                if (m.getAttackCountdown() == 0) {
+
+                    for (int offset = 0; offset < 3; offset++) {
+                        int targetRow = r + (dir * offset);
+                        if (targetRow >= 0 && targetRow <= maxRow) {
+                            board.removeUnit(targetRow, col);
+                        }
+                    }
+
+
+                    //doAttack(m, r, col);
+                } else {
+                    System.out.println(r + " " + col + " ^ " + u);
+                    m.setAttackCountdown(m.getAttackCountdown() - 1);
+                    m.setHealth((int)(m.getHealth() * 1.4));
+                }
+
+                r += dir * 3; // Salta tutta la Big Unit
             }
         }
     }
+
 
     @Override
     public void skipTurn() {
@@ -87,6 +106,7 @@ public class MyEventHandler4_1 implements EventHandler {
                 snapshot.getSizeOfReinforcement(player),
                 snapshot.getSizeOfReinforcement(player)
         );
+        UnitMerger.baordHandler(snapshot.getBoard());
         displayManager.drawSnapshot(
                 snapshot,
                 "This is another dummy game snapshot, to test animations."
@@ -215,7 +235,7 @@ public class MyEventHandler4_1 implements EventHandler {
             // movimento
             snapshot.getBoard().addUnit(to.rowIndex(), to.columnIndex(), sourceUnit);
             snapshot.getBoard().removeUnit(from.rowIndex(), from.columnIndex());
-            
+            UnitMerger.baordHandler(snapshot.getBoard());  //TODO danial pls look at this
             // diminuisco azioni
             snapshot.setActionsRemaining(snapshot.getActionsRemaining() - 1);
             
