@@ -8,6 +8,7 @@ import it.unibz.inf.pp.clash.model.snapshot.units.impl.Butterfly;
 import it.unibz.inf.pp.clash.model.snapshot.units.impl.Fairy;
 import it.unibz.inf.pp.clash.model.snapshot.units.impl.Unicorn;
 import it.unibz.inf.pp.clash.model.snapshot.units.impl.Wall;
+import it.unibz.inf.pp.clash.model.utils.UnitMerger;
 
 
 import static it.unibz.inf.pp.clash.model.snapshot.units.MobileUnit.UnitColor.*;
@@ -37,31 +38,45 @@ public class AnotherDummySnapshot extends AbstractSnapshot implements Snapshot {
         Unicorn bigUnicorn = new Unicorn(THREE);
         bigUnicorn.setAttackCountdown(2);
         bigUnicorn.setHealth(10);
+        bigUnicorn.isBigUnit = true;
         Fairy bigFairy = new Fairy(TWO);
         bigFairy.setAttackCountdown(3);
         bigFairy.setHealth(15);
+        bigFairy.isBigUnit = true;
 
-        //Player 2
+//        //Player 2
+//        board.addUnit(0,0, new Fairy(THREE));
+//        board.addUnit(3,0, new Fairy(THREE));
         board.addUnit(4, 0, new Fairy(THREE));
         board.addUnit(5, 0, new Wall());
         board.addUnit(4, 2, new Unicorn(ONE));
         board.addUnit(5, 2, new Unicorn(THREE));
-        board.addUnit(1, 3, new Butterfly(THREE));
-        board.addUnit(2, 3, bigFairy);
-        board.addUnit(3, 3, bigFairy);
-        board.addUnit(4, 3, bigFairy);
+        board.addUnit(2, 3, new Butterfly(THREE));
+        board.addUnit(3, 3, new Butterfly(THREE));
+        board.addUnit(4, 3, new Butterfly(THREE));
+        board.addUnit(2, 7, new Unicorn(ONE));
+        board.addUnit(3, 7, new Unicorn(ONE));
+        board.addUnit(4, 7, new Unicorn(ONE));
+        board.addUnit(3, 6, new Butterfly(TWO));
+        board.addUnit(4, 6, new Butterfly(TWO));
+        board.addUnit(5, 6, new Butterfly(TWO));
+
         board.addUnit(5, 3, new Wall());
         board.addUnit(5, 4, new Wall());
         board.addUnit(5, 7, new Butterfly(THREE));
+//        board.addUnit(1,0, new Fairy(ONE));
+//        board.addUnit(1,1, new Fairy(ONE));
+//        board.addUnit(1,2, new Fairy(ONE));
+
         //Player 1
         board.addUnit(6, 1, new Butterfly(THREE));
         board.addUnit(6, 2, new Butterfly(ONE));
         board.addUnit(7, 2, new Butterfly(TWO));
         board.addUnit(8, 2, new Fairy(ONE));
         board.addUnit(6, 4, new Wall());
-        board.addUnit(6, 5, bigUnicorn);
-        board.addUnit(7, 5, bigUnicorn);
-        board.addUnit(8, 5, bigUnicorn);
+        board.addUnit(6, 5, new Unicorn(ONE));
+        board.addUnit(7, 5, new Unicorn(ONE));
+        board.addUnit(8, 5, new Unicorn(ONE));
         board.addUnit(9, 5, new Fairy(THREE));
         board.addUnit(6, 7, new Butterfly(ONE));
         board.addUnit(7, 7, new Butterfly(ONE));
