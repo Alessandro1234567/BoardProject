@@ -1,5 +1,6 @@
 package it.unibz.inf.pp.clash.model.snapshot.impl.dummy;
 
+import it.unibz.inf.pp.clash.model.snapshot.Hero;
 import it.unibz.inf.pp.clash.model.snapshot.Snapshot;
 import it.unibz.inf.pp.clash.model.snapshot.impl.AbstractSnapshot;
 import it.unibz.inf.pp.clash.model.snapshot.impl.BoardImpl;
@@ -16,6 +17,8 @@ import java.util.Random;
 
 
 public class RealSnapshot extends AbstractSnapshot implements Snapshot {
+
+    private Hero hero1;
 
     public RealSnapshot(String firstHeroName, String secondHeroName, int min, int max) {
         super(
