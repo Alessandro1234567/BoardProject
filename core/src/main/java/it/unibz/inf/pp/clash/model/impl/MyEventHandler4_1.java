@@ -72,6 +72,11 @@ public class MyEventHandler4_1 implements EventHandler {
                         }
                     }
 
+                    //TODO se ci sono due super truppe che devono attaccare la seconda non attaccerà per il fatto che si sposta in avanti
+
+                    if (active == Snapshot.Player.FIRST) UnitMerger.columnManagerP1(board, col);
+                    else UnitMerger.columnManagerP2(board, col);
+
 
                     //doAttack(m, r, col);
                 } else {
