@@ -4,7 +4,10 @@ import it.unibz.inf.pp.clash.model.EventHandler;
 import it.unibz.inf.pp.clash.model.snapshot.Board;
 import it.unibz.inf.pp.clash.model.snapshot.Snapshot;
 import it.unibz.inf.pp.clash.model.snapshot.impl.dummy.DummySnapshot;
+import it.unibz.inf.pp.clash.model.snapshot.impl.dummy.RealSnapshot;
+import it.unibz.inf.pp.clash.model.snapshot.units.MobileUnit;
 import it.unibz.inf.pp.clash.model.snapshot.units.Unit;
+import it.unibz.inf.pp.clash.model.utils.UnitGenerator;
 import it.unibz.inf.pp.clash.view.DisplayManager;
 import it.unibz.inf.pp.clash.view.exceptions.NoGameOnScreenException;
 
@@ -13,7 +16,7 @@ import java.util.Optional;
 public class MyEventHandler4_1 implements EventHandler {
 
     private final DisplayManager displayManager;
-    private DummySnapshot snapshot;
+    private RealSnapshot snapshot;
 
     public MyEventHandler4_1(DisplayManager displayManager) {
         this.displayManager = displayManager;
@@ -21,8 +24,9 @@ public class MyEventHandler4_1 implements EventHandler {
 
     @Override
     public void newGame(String firstHero, String secondHero) {
+        snapshot = new RealSnapshot(firstHero, secondHero, 7, 10);
         displayManager.drawSnapshot(
-                this.snapshot = new DummySnapshot(firstHero, secondHero),
+                snapshot,
                 "Game has started."
         );
     }
@@ -32,8 +36,40 @@ public class MyEventHandler4_1 implements EventHandler {
         displayManager.drawHomeScreen();
     }
 
+    private void attack() {
+        Snapshot.Player activePlayer = snapshot.getActivePlayer();
+        final int cols = snapshot.getBoard().getMaxRowIndex() / 2 + (activePlayer.equals(Snapshot.Player.FIRST) ? 1 : 0);
+        int col = cols;
+
+        for (int i = 0; i <= snapshot.getBoard().getMaxColumnIndex(); i++){
+            System.out.println(i + " " + col);
+            Optional<Unit> optUnit = snapshot.getBoard().getUnit(i,col);
+            if (optUnit.isPresent()){
+                Unit unit = optUnit.get();
+                while (!(unit instanceof MobileUnit) || ((MobileUnit) unit).getAttackCountdown() > -1){
+
+                    if (((MobileUnit) unit).getAttackCountdown() == 0){
+                        //attack
+                    }
+
+                    if (((MobileUnit) unit).getAttackCountdown() > 0){
+                        unit.setHealth((int) (unit.getHealth() * 0.4));
+                        col = col + 2;
+                    }
+
+                    col++;
+                    Optional<Unit> temp = snapshot.getBoard().getUnit(i,col);
+                    if (temp.isEmpty()) break;
+                    unit = temp.get();
+                }
+                col = cols;
+            }
+        }
+    }
+
     @Override
     public void skipTurn() {
+        attack();
         snapshot.setActivePlayer((snapshot.getActivePlayer() == Snapshot.Player.FIRST) ? Snapshot.Player.SECOND : Snapshot.Player.FIRST);
         snapshot.setActionsRemaining(3);
         displayManager.drawSnapshot(
@@ -44,7 +80,18 @@ public class MyEventHandler4_1 implements EventHandler {
 
     @Override
     public void callReinforcement() {
-        // Da implementare con metodo Zago
+        Snapshot.Player player = snapshot.getActivePlayer();
+        UnitGenerator.populateTiles(
+                player,
+                snapshot.getBoard(),
+                snapshot.getSizeOfReinforcement(player),
+                snapshot.getSizeOfReinforcement(player)
+        );
+        displayManager.drawSnapshot(
+                snapshot,
+                "This is another dummy game snapshot, to test animations."
+        );
+        snapshot.setActionsRemaining(snapshot.getActionsRemaining() - 1);
     }
 
     @Override
@@ -67,6 +114,16 @@ public class MyEventHandler4_1 implements EventHandler {
             Optional<Unit> unitOpt = snapshot.getBoard().getUnit(rowIndex, columnIndex);
             //verifico la presenza di un unità
             if (unitOpt.isPresent()) {
+                //controllo se è mobile 
+                Unit unit = unitOpt.get();
+                if (!(unit instanceof MobileUnit)) {
+                    try {
+                        displayManager.updateMessage("Cannot select static units!");
+                    } catch (NoGameOnScreenException e) {
+                        throw new RuntimeException(e);
+                    }
+                    return;
+                }
                 if (!isOwned(snapshot.getActivePlayer(), rowIndex)) {
                     try {
                         displayManager.updateMessage("Cannot select opponent's unit!");
@@ -96,10 +153,20 @@ public class MyEventHandler4_1 implements EventHandler {
         moveUnit(snapshot.getOngoingMove().get(), clickedTile);
         snapshot.setOngoingMove(null);
         
-        // sposta verso il centro solo se la casella è nel territorio del giocatore
-        if (isOwned(snapshot.getActivePlayer(), clickedTile.rowIndex())) {
-            Optional<Unit> movedUnit = snapshot.getBoard().getUnit(clickedTile.rowIndex(), clickedTile.columnIndex());
-            movedUnit.ifPresent(unit -> moveForward(unit, clickedTile));
+        //Verifica se usare metodo move forward (sfortunatamente c'era un bug che se si selezionava direttamente la prima casella libera
+        //mi spostava la pediana su quella successiva (da migliorare)
+        int direction = snapshot.getActivePlayer() == Snapshot.Player.FIRST ? -1 : 1;
+        int prevRow = clickedTile.rowIndex() + direction;
+        
+        // Verifica se la casella antecedente è vuota e non territorio del giocatore
+        if (isOwned(snapshot.getActivePlayer(), prevRow) &&
+            snapshot.getBoard().getUnit(prevRow, clickedTile.columnIndex()).isEmpty()) {
+
+            // sposta verso il centro solo se la casella è nel territorio del giocatore
+            if (isOwned(snapshot.getActivePlayer(), clickedTile.rowIndex())) {
+                Optional<Unit> movedUnit = snapshot.getBoard().getUnit(clickedTile.rowIndex(), clickedTile.columnIndex());
+                movedUnit.ifPresent(unit -> moveForward(unit, clickedTile));
+            }
         }
     }
     //metodo ausiliario per verificare appartenenza board

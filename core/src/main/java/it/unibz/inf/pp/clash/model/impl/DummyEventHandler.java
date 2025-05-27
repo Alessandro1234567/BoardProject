@@ -1,9 +1,13 @@
 package it.unibz.inf.pp.clash.model.impl;
 
 import it.unibz.inf.pp.clash.model.EventHandler;
+import it.unibz.inf.pp.clash.model.snapshot.Snapshot;
+import it.unibz.inf.pp.clash.model.snapshot.Snapshot;
 import it.unibz.inf.pp.clash.model.snapshot.impl.dummy.AnotherDummySnapshot;
 import it.unibz.inf.pp.clash.model.snapshot.impl.dummy.DummySnapshot;
 import it.unibz.inf.pp.clash.model.snapshot.impl.dummy.RealSnapshot;
+import it.unibz.inf.pp.clash.model.utils.UnitGenerator;
+import it.unibz.inf.pp.clash.model.utils.UnitGenerator;
 import it.unibz.inf.pp.clash.view.DisplayManager;
 import it.unibz.inf.pp.clash.view.exceptions.NoGameOnScreenException;
 
@@ -13,6 +17,11 @@ import it.unibz.inf.pp.clash.view.exceptions.NoGameOnScreenException;
  */
 public class DummyEventHandler implements EventHandler {
 
+<<<<<<< HEAD
+    RealSnapshot currentSnapshot;
+
+=======
+>>>>>>> Nicola
     private final DisplayManager displayManager;
 
     public DummyEventHandler(DisplayManager displayManager) {
@@ -63,22 +72,31 @@ public class DummyEventHandler implements EventHandler {
 
     @Override
     public void newGame(String firstHero, String secondHero) {
+        currentSnapshot = new RealSnapshot(firstHero, secondHero, 7, 11);
         displayManager.drawSnapshot(
+<<<<<<< HEAD
+                currentSnapshot,
+=======
                 new AnotherDummySnapshot(
                         firstHero,
                         secondHero
                 ),
+>>>>>>> Nicola
                 "This is a dummy game snapshot, for demonstration purposes."
         );
     }
 
     @Override
     public void callReinforcement() {
+        Snapshot.Player player = currentSnapshot.getActivePlayer();
+        UnitGenerator.populateTiles(
+                player,
+                currentSnapshot.getBoard(),
+                currentSnapshot.getSizeOfReinforcement(player),
+                currentSnapshot.getSizeOfReinforcement(player)
+        );
         displayManager.drawSnapshot(
-                new AnotherDummySnapshot(
-                        "Alice",
-                        "Bob"
-                ),
+                currentSnapshot,
                 "This is another dummy game snapshot, to test animations."
         );
     }

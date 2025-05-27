@@ -17,18 +17,18 @@ import java.util.Random;
 
 public class RealSnapshot extends AbstractSnapshot implements Snapshot {
 
-    public RealSnapshot(String firstHeroName, String secondHeroName) {
+    public RealSnapshot(String firstHeroName, String secondHeroName, int min, int max) {
         super(
                 new HeroImpl(firstHeroName, 20),
                 new HeroImpl(secondHeroName, 10),
-                BoardImpl.createEmptyBoard(7, 6),
+                BoardImpl.createEmptyBoard(11, 7),
                 Player.FIRST,
-                2,
+                3,
                 null
         );
 //        this.ongoingMove = new TileCoordinates(6, 1);
-        UnitGenerator.populateTiles(Player.FIRST, getBoard(), 7, 11);
-        UnitGenerator.populateTiles(Player.SECOND, getBoard(), 7, 11);
+        UnitGenerator.populateTiles(Player.FIRST, getBoard(), min, max);
+        UnitGenerator.populateTiles(Player.SECOND, getBoard(), min, max);
     }
 
     @Override

@@ -47,10 +47,16 @@ public class UnitGenerator {
             int col = new Random().nextInt(board.getMaxColumnIndex() + 1);
 
             while (board.getUnit(row, col).isPresent()) {
-                row += increment;
+                if(row == 0 || row == board.getMaxRowIndex()){
+                    col = new Random().nextInt(board.getMaxColumnIndex() + 1);
+                    row = rows;
+                }else{
+                    row += increment;
+                }
             }
 
             board.addUnit(row, col, unit);
         }
+
     }
 }
