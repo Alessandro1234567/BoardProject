@@ -11,7 +11,7 @@ import java.util.Optional;
 
 public class UnitMerger {
 
-    public static void baordHandler(Board board) {
+    public static void boardHandler(Board board) {
         List<Coordinate> vertMatches = findVertMatch(board);
         List<Coordinate> horMatches = findHorMatch(board);
 
@@ -35,6 +35,11 @@ public class UnitMerger {
     }
 
     private static boolean areValidMatchingUnits(AbstractMobileUnit au1, AbstractMobileUnit au2, AbstractMobileUnit au3) {
+//        boolean sameColor = au1.getColor() == au2.getColor() && au2.getColor() == au3.getColor();
+//        boolean sameClass = au1.getClass() == au2.getClass() && au2.getClass() == au3.getClass();
+//        boolean notBigUnits = au1.getAttackCountdown() == -1 && au2.getAttackCountdown() == -1 && au3.getAttackCountdown() == -1;
+//        return sameColor && sameClass && notBigUnits;
+
         return au1.equals(au2) && au1.equals(au3) &&
                 !au1.isBigUnit && !au2.isBigUnit && !au3.isBigUnit;
     }
