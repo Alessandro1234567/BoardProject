@@ -38,25 +38,31 @@ public class MyEventHandler4_1 implements EventHandler {
 
     private void attack() {
         Snapshot.Player activePlayer = snapshot.getActivePlayer();
-        final int row = snapshot.getBoard().getMaxRowIndex() / 2 + (activePlayer.equals(Snapshot.Player.FIRST) ? 1 : 0);
-        int col = 0;
+        final int cols = snapshot.getBoard().getMaxRowIndex() / 2 + (activePlayer.equals(Snapshot.Player.FIRST) ? 1 : 0);
+        int col = cols;
 
-        for (int i = row; i <= snapshot.getBoard().getMaxColumnIndex(); i++){
-            System.out.println(i);
+        for (int i = 0; i <= snapshot.getBoard().getMaxColumnIndex(); i++){
+            System.out.println(i + " " + col);
             Optional<Unit> optUnit = snapshot.getBoard().getUnit(i,col);
             if (optUnit.isPresent()){
                 Unit unit = optUnit.get();
-                while (!(unit instanceof MobileUnit) || )
-            }
+                while (!(unit instanceof MobileUnit) || ((MobileUnit) unit).getAttackCountdown() > -1){
 
-            if(snapshot.getBoard().getUnit(i,col).isPresent()){
-                if(((MobileUnit) snapshot.getBoard().getUnit(i,col).get()).getAttackCountdown() >= 0){
-                    System.out.println("Big Unit");
-                }else{
-                    System.out.println("Normal Unit");
+                    if (((MobileUnit) unit).getAttackCountdown() == 0){
+                        //attack
+                    }
+
+                    if (((MobileUnit) unit).getAttackCountdown() > 0){
+                        unit.setHealth((int) (unit.getHealth() * 0.4));
+                        col = col + 2;
+                    }
+
+                    col++;
+                    Optional<Unit> temp = snapshot.getBoard().getUnit(i,col);
+                    if (temp.isEmpty()) break;
+                    unit = temp.get();
                 }
-            }else{
-                System.out.println("Empty" + i + " " + j);
+                col = cols;
             }
         }
     }
