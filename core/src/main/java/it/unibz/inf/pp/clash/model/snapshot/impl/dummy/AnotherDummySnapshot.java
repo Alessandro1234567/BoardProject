@@ -67,6 +67,7 @@ public class AnotherDummySnapshot extends AbstractSnapshot implements Snapshot {
         board.addUnit(1,0, new Fairy(ONE));
         board.addUnit(1,1, new Fairy(ONE));
         board.addUnit(1,2, new Fairy(ONE));
+        board.addUnit(5,5, new Unicorn(ONE));
 
         //Player 1
         board.addUnit(6, 1, new Butterfly(THREE));
