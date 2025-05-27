@@ -45,19 +45,19 @@ public class MyEventHandler4_1 implements EventHandler {
         int midRow = maxRow / 2;
 
         int startRow = (active == Snapshot.Player.FIRST) ? midRow + 1 : midRow;
-        int dir = active == Snapshot.Player.FIRST ? 1 : -1;
+        int direction = active == Snapshot.Player.FIRST ? 1 : -1;
         int maxCol = board.getMaxColumnIndex();
 
         for (int col = 0; col <= maxCol; col++) {
-            int r = startRow;
+            int row = startRow;
 
-            while (r >= 0 && r <= maxRow) {
-                Optional<Unit> opt = board.getUnit(r, col);
+            while (row >= 0 && row <= maxRow) {
+                Optional<Unit> opt = board.getUnit(row, col);
                 if (opt.isEmpty()) break;
 
                 Unit u = opt.get();
                 if (!(u instanceof MobileUnit m)) {
-                    r += dir;
+                    row += direction;
                     continue;
                 }
 
@@ -66,7 +66,7 @@ public class MyEventHandler4_1 implements EventHandler {
                 if (m.getAttackCountdown() == 0) {
 
                     for (int offset = 0; offset < 3; offset++) {
-                        int targetRow = r + (dir * offset);
+                        int targetRow = row + (direction * offset);
                         if (targetRow >= 0 && targetRow <= maxRow) {
                             board.removeUnit(targetRow, col);
                         }
@@ -77,15 +77,14 @@ public class MyEventHandler4_1 implements EventHandler {
                     if (active == Snapshot.Player.FIRST) UnitMerger.columnManagerP1(board, col);
                     else UnitMerger.columnManagerP2(board, col);
 
-
-                    //doAttack(m, r, col);
+                    //TODO doAttack(m, row, col);
                 } else {
-                    System.out.println(r + " " + col + " ^ " + u);
+                    System.out.println(row + " " + col + " ^ " + u);
                     m.setAttackCountdown(m.getAttackCountdown() - 1);
                     m.setHealth((int)(m.getHealth() * 1.4));
                 }
 
-                r += dir * 3; // Salta tutta la Big Unit
+                row += direction * 3; // Salta tutta la Big Unit
             }
         }
     }
