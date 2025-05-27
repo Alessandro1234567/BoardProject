@@ -52,24 +52,32 @@ public class UnitMerger {
 
         //check if on the same ver line
         for (int i = 0; i <= maxColumnIndex; i++) {
-            for (int j = 0; j <= maxRowIndex - 2; j++) {
+            for (int j = 0; j <= maxRowIndex/2 - 2; j++) {
 
-                Optional<Unit> opt1 = board.getUnit(j, i);
-                Optional<Unit> opt2 = board.getUnit(j + 1, i);
-                Optional<Unit> opt3 = board.getUnit(j + 2, i);
+                findVertMatchHelp(board, vertMatches, i, j);
+            }
+            for (int j = maxRowIndex/2; j <= maxRowIndex - 2; j++) {
 
-                AbstractMobileUnit au1 = optToAbUnit(opt1);
-                AbstractMobileUnit au2 = optToAbUnit(opt2);
-                AbstractMobileUnit au3 = optToAbUnit(opt3);
-
-                if (au1 == null || au2 == null || au3 == null) continue;
-
-                if (areValidMatchingUnits(au1, au2, au3)) {
-                    vertMatches.add(new Coordinate(i, j));
-                }
+                findVertMatchHelp(board, vertMatches, i, j);
             }
         }
         return vertMatches;
+    }
+
+    private static void findVertMatchHelp(Board board, List<Coordinate> vertMatches, int i, int j) {
+        Optional<Unit> opt1 = board.getUnit(j, i);
+        Optional<Unit> opt2 = board.getUnit(j + 1, i);
+        Optional<Unit> opt3 = board.getUnit(j + 2, i);
+
+        AbstractMobileUnit au1 = optToAbUnit(opt1);
+        AbstractMobileUnit au2 = optToAbUnit(opt2);
+        AbstractMobileUnit au3 = optToAbUnit(opt3);
+
+        if (au1 == null || au2 == null || au3 == null) return;
+
+        if (areValidMatchingUnits(au1, au2, au3)) {
+            vertMatches.add(new Coordinate(i, j));
+        }
     }
 
     public static List<Coordinate> findHorMatch(Board board) {
