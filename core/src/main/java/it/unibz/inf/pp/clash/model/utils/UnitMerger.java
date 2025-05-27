@@ -56,7 +56,7 @@ public class UnitMerger {
 
                 findVertMatchHelp(board, vertMatches, i, j);
             }
-            for (int j = maxRowIndex/2; j <= maxRowIndex - 2; j++) {
+            for (int j = maxRowIndex/2+1; j <= maxRowIndex - 2; j++) {
 
                 findVertMatchHelp(board, vertMatches, i, j);
             }
