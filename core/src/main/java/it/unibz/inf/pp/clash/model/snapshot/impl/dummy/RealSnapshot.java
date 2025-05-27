@@ -33,10 +33,9 @@ public class RealSnapshot extends AbstractSnapshot implements Snapshot {
 
     @Override
     public int getSizeOfReinforcement(Player player) {
-
         if (player == Player.FIRST) {
-            return 3;
+            return ((HeroImpl)getHero(player)).getReinforcements();
         }
-        return 2;
+        return ((HeroImpl)getHero(player)).getReinforcements();
     }
 }

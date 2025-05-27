@@ -3,6 +3,7 @@ package it.unibz.inf.pp.clash.model.impl;
 import it.unibz.inf.pp.clash.model.EventHandler;
 import it.unibz.inf.pp.clash.model.snapshot.Board;
 import it.unibz.inf.pp.clash.model.snapshot.Snapshot;
+import it.unibz.inf.pp.clash.model.snapshot.impl.HeroImpl;
 import it.unibz.inf.pp.clash.model.snapshot.impl.dummy.DummySnapshot;
 import it.unibz.inf.pp.clash.model.snapshot.impl.dummy.RealSnapshot;
 import it.unibz.inf.pp.clash.model.snapshot.units.MobileUnit;
@@ -70,6 +71,7 @@ public class MyEventHandler4_1 implements EventHandler {
     @Override
     public void skipTurn() {
         attack();
+        ((HeroImpl)snapshot.getHero(snapshot.getActivePlayer())).setReinforcements(3);
         snapshot.setActivePlayer((snapshot.getActivePlayer() == Snapshot.Player.FIRST) ? Snapshot.Player.SECOND : Snapshot.Player.FIRST);
         snapshot.setActionsRemaining(3);
         displayManager.drawSnapshot(
@@ -80,13 +82,30 @@ public class MyEventHandler4_1 implements EventHandler {
 
     @Override
     public void callReinforcement() {
+        if (snapshot.getActionsRemaining() <= 0) {
+            try {
+                displayManager.updateMessage("No actions remaining for this turn!");
+            } catch (NoGameOnScreenException e) {
+                throw new RuntimeException(e);
+            }
+            return;
+        }
+        if (snapshot.getSizeOfReinforcement(snapshot.getActivePlayer()) <= 0) {
+            try {
+                displayManager.updateMessage("No reinforcements aviable!");
+            } catch (NoGameOnScreenException e) {
+                throw new RuntimeException(e);
+            }
+            return;
+        }
         Snapshot.Player player = snapshot.getActivePlayer();
         UnitGenerator.populateTiles(
                 player,
                 snapshot.getBoard(),
-                snapshot.getSizeOfReinforcement(player),
-                snapshot.getSizeOfReinforcement(player)
+                snapshot.getSizeOfReinforcement(snapshot.getActivePlayer()),
+                snapshot.getSizeOfReinforcement(snapshot.getActivePlayer())
         );
+        ((HeroImpl)snapshot.getHero(player)).setReinforcements(0);
         displayManager.drawSnapshot(
                 snapshot,
                 "This is another dummy game snapshot, to test animations."
