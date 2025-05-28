@@ -151,6 +151,22 @@ public class MyEventHandler4_1 implements EventHandler {
                     }
                     return;
                 }
+
+                // Controlla che non sia tra due unità
+                int direction = snapshot.getActivePlayer() == Snapshot.Player.FIRST ? 1 : -1;
+                int nextRow = rowIndex + direction;
+                if (nextRow >= 0 && nextRow <= snapshot.getBoard().getMaxRowIndex()) {
+                    Optional<Unit> nextUnit = snapshot.getBoard().getUnit(nextRow, columnIndex);
+                    if (nextUnit.isPresent()) {
+                        try {
+                            displayManager.updateMessage("Cannot select unit: there is another unit behind it!");
+                        } catch (NoGameOnScreenException e) {
+                            throw new RuntimeException(e);
+                        }
+                        return;
+                    }
+                }
+
                 snapshot.setOngoingMove(clickedTile);
                 displayManager.drawSnapshot(snapshot, "Unit selected at (" + rowIndex + ", " + columnIndex + ")");
             } else {
@@ -270,22 +286,18 @@ public class MyEventHandler4_1 implements EventHandler {
     public void deleteUnit(int rowIndex, int columnIndex) {
         Optional<Unit> unitOpt = snapshot.getBoard().getUnit(rowIndex, columnIndex);
         if (unitOpt.isPresent()) {
-            try {
-                snapshot.getBoard().removeUnit(rowIndex, columnIndex);
-                displayManager.drawSnapshot(snapshot, "Unit deleted at (" + rowIndex + ", " + columnIndex + ")");
-            } catch (Exception e) {
+            if (!isOwned(snapshot.getActivePlayer(), rowIndex)) {
                 try {
-                    displayManager.updateMessage("Error during deletion: " + e.getMessage());
-                } catch (NoGameOnScreenException ex) {
-                    throw new RuntimeException(ex);
+                    displayManager.updateMessage("Cannot select opponent's unit!");
+                } catch (NoGameOnScreenException e) {
+                    throw new RuntimeException(e);
                 }
+                return;
             }
-        } else {
-            try {
-                displayManager.updateMessage("No unit to delete at (" + rowIndex + ", " + columnIndex + ")");
-            } catch (NoGameOnScreenException e) {
-                throw new RuntimeException(e);
-            }
+            snapshot.getBoard().removeUnit(rowIndex, columnIndex);
+            displayManager.drawSnapshot(snapshot, "Unit deleted at (" + rowIndex + ", " + columnIndex + ")");
+            snapshot.setActionsRemaining(snapshot.getActionsRemaining() - 1);
+            //((HeroImpl)snapshot.getHero(snapshot.getActivePlayer())).setReinforcements(0);
         }
     }
 } 
