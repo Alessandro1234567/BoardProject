@@ -11,7 +11,7 @@ import java.util.Optional;
 
 public class UnitMerger {
 
-    public static void baordHandler(Board board) {
+    public static void boardHandler(Board board) {
         List<Coordinate> vertMatches = findVertMatch(board);
         List<Coordinate> horMatches = findHorMatch(board);
 
@@ -35,6 +35,11 @@ public class UnitMerger {
     }
 
     private static boolean areValidMatchingUnits(AbstractMobileUnit au1, AbstractMobileUnit au2, AbstractMobileUnit au3) {
+//        boolean sameColor = au1.getColor() == au2.getColor() && au2.getColor() == au3.getColor();
+//        boolean sameClass = au1.getClass() == au2.getClass() && au2.getClass() == au3.getClass();
+//        boolean notBigUnits = au1.getAttackCountdown() == -1 && au2.getAttackCountdown() == -1 && au3.getAttackCountdown() == -1;
+//        return sameColor && sameClass && notBigUnits;
+
         return au1.equals(au2) && au1.equals(au3) &&
                 !au1.isBigUnit && !au2.isBigUnit && !au3.isBigUnit;
     }
@@ -47,24 +52,32 @@ public class UnitMerger {
 
         //check if on the same ver line
         for (int i = 0; i <= maxColumnIndex; i++) {
-            for (int j = 0; j <= maxRowIndex - 2; j++) {
+            for (int j = 0; j <= maxRowIndex/2 - 2; j++) {
 
-                Optional<Unit> opt1 = board.getUnit(j, i);
-                Optional<Unit> opt2 = board.getUnit(j + 1, i);
-                Optional<Unit> opt3 = board.getUnit(j + 2, i);
+                findVertMatchHelp(board, vertMatches, i, j);
+            }
+            for (int j = maxRowIndex/2+1; j <= maxRowIndex - 2; j++) {
 
-                AbstractMobileUnit au1 = optToAbUnit(opt1);
-                AbstractMobileUnit au2 = optToAbUnit(opt2);
-                AbstractMobileUnit au3 = optToAbUnit(opt3);
-
-                if (au1 == null || au2 == null || au3 == null) continue;
-
-                if (areValidMatchingUnits(au1, au2, au3)) {
-                    vertMatches.add(new Coordinate(i, j));
-                }
+                findVertMatchHelp(board, vertMatches, i, j);
             }
         }
         return vertMatches;
+    }
+
+    private static void findVertMatchHelp(Board board, List<Coordinate> vertMatches, int i, int j) {
+        Optional<Unit> opt1 = board.getUnit(j, i);
+        Optional<Unit> opt2 = board.getUnit(j + 1, i);
+        Optional<Unit> opt3 = board.getUnit(j + 2, i);
+
+        AbstractMobileUnit au1 = optToAbUnit(opt1);
+        AbstractMobileUnit au2 = optToAbUnit(opt2);
+        AbstractMobileUnit au3 = optToAbUnit(opt3);
+
+        if (au1 == null || au2 == null || au3 == null) return;
+
+        if (areValidMatchingUnits(au1, au2, au3)) {
+            vertMatches.add(new Coordinate(i, j));
+        }
     }
 
     public static List<Coordinate> findHorMatch(Board board) {
@@ -217,5 +230,7 @@ public class UnitMerger {
         board.addUnit(row + 1, col, bigUnit);
         board.addUnit(row + 2, col, bigUnit);
     }
+
+
 }
 

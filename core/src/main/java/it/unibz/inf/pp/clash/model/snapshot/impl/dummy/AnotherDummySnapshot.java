@@ -64,9 +64,10 @@ public class AnotherDummySnapshot extends AbstractSnapshot implements Snapshot {
         board.addUnit(5, 3, new Wall());
         board.addUnit(5, 4, new Wall());
         board.addUnit(5, 7, new Butterfly(THREE));
-//        board.addUnit(1,0, new Fairy(ONE));
-//        board.addUnit(1,1, new Fairy(ONE));
-//        board.addUnit(1,2, new Fairy(ONE));
+        board.addUnit(1,0, new Fairy(ONE));
+        board.addUnit(1,1, new Fairy(ONE));
+        board.addUnit(1,2, new Fairy(ONE));
+        board.addUnit(5,5, new Unicorn(ONE));
 
         //Player 1
         board.addUnit(6, 1, new Butterfly(THREE));
@@ -80,6 +81,8 @@ public class AnotherDummySnapshot extends AbstractSnapshot implements Snapshot {
         board.addUnit(9, 5, new Fairy(THREE));
         board.addUnit(6, 7, new Butterfly(ONE));
         board.addUnit(7, 7, new Butterfly(ONE));
+
+        UnitMerger.boardHandler(board);
     }
 
     @Override

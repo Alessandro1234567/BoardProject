@@ -27,7 +27,7 @@ public class MyEventHandler4_1 implements EventHandler {
     @Override
     public void newGame(String firstHero, String secondHero) {
         snapshot = new RealSnapshot(firstHero, secondHero, 7, 10);
-        UnitMerger.baordHandler(snapshot.getBoard());
+        UnitMerger.boardHandler(snapshot.getBoard());
         displayManager.drawSnapshot(
                 snapshot,
                 "Game has started."
@@ -162,7 +162,7 @@ public class MyEventHandler4_1 implements EventHandler {
                 snapshot.getSizeOfReinforcement(player),
                 snapshot.getSizeOfReinforcement(player)
         );
-        UnitMerger.baordHandler(snapshot.getBoard());
+        UnitMerger.boardHandler(snapshot.getBoard());
         displayManager.drawSnapshot(
                 snapshot,
                 "This is another dummy game snapshot, to test animations."
@@ -291,7 +291,7 @@ public class MyEventHandler4_1 implements EventHandler {
             // movimento
             snapshot.getBoard().addUnit(to.rowIndex(), to.columnIndex(), sourceUnit);
             snapshot.getBoard().removeUnit(from.rowIndex(), from.columnIndex());
-            UnitMerger.baordHandler(snapshot.getBoard());  //TODO danial pls look at this
+            UnitMerger.boardHandler(snapshot.getBoard());  //TODO danial pls look at this
             // diminuisco azioni
             snapshot.setActionsRemaining(snapshot.getActionsRemaining() - 1);
             
