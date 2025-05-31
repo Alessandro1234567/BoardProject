@@ -230,5 +230,7 @@ public class UnitMerger {
         board.addUnit(row + 1, col, bigUnit);
         board.addUnit(row + 2, col, bigUnit);
     }
+
+
 }
 

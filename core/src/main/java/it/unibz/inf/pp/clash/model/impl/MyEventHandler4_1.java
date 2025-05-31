@@ -2,12 +2,14 @@ package it.unibz.inf.pp.clash.model.impl;
 
 import it.unibz.inf.pp.clash.model.EventHandler;
 import it.unibz.inf.pp.clash.model.snapshot.Board;
+import it.unibz.inf.pp.clash.model.snapshot.Hero;
 import it.unibz.inf.pp.clash.model.snapshot.Snapshot;
 import it.unibz.inf.pp.clash.model.snapshot.impl.HeroImpl;
 import it.unibz.inf.pp.clash.model.snapshot.impl.dummy.RealSnapshot;
 import it.unibz.inf.pp.clash.model.snapshot.units.MobileUnit;
 import it.unibz.inf.pp.clash.model.snapshot.units.Unit;
 import it.unibz.inf.pp.clash.model.utils.UnitGenerator;
+import it.unibz.inf.pp.clash.model.utils.UnitMerger;
 import it.unibz.inf.pp.clash.view.DisplayManager;
 import it.unibz.inf.pp.clash.view.exceptions.NoGameOnScreenException;
 
@@ -25,6 +27,7 @@ public class MyEventHandler4_1 implements EventHandler {
     @Override
     public void newGame(String firstHero, String secondHero) {
         snapshot = new RealSnapshot(firstHero, secondHero, 7, 10);
+        UnitMerger.boardHandler(snapshot.getBoard());
         displayManager.drawSnapshot(
                 snapshot,
                 "Game has started."
@@ -36,36 +39,108 @@ public class MyEventHandler4_1 implements EventHandler {
         displayManager.drawHomeScreen();
     }
 
-    private void attack() {
-        Snapshot.Player activePlayer = snapshot.getActivePlayer();
-        final int cols = snapshot.getBoard().getMaxRowIndex() / 2 + (activePlayer.equals(Snapshot.Player.FIRST) ? 1 : 0);
-        int col = cols;
+    public void attack() {
+        Snapshot.Player active = snapshot.getActivePlayer();
+        Board board = snapshot.getBoard();
+        int maxRow = board.getMaxRowIndex();
+        int midRow = maxRow / 2;
 
-        for (int i = 0; i <= snapshot.getBoard().getMaxColumnIndex(); i++){
-            System.out.println(i + " " + col);
-            Optional<Unit> optUnit = snapshot.getBoard().getUnit(i,col);
-            if (optUnit.isPresent()){
-                Unit unit = optUnit.get();
-                while (!(unit instanceof MobileUnit) || ((MobileUnit) unit).getAttackCountdown() > -1){
+        boolean isFirst = active == Snapshot.Player.FIRST;
+        int startRow = isFirst ? midRow + 1 : midRow;
+        int direction = isFirst ? 1 : -1;
+        int maxCol = board.getMaxColumnIndex();
 
-                    if (((MobileUnit) unit).getAttackCountdown() == 0){
-                        //attack
-                    }
+        for (int col = 0; col <= maxCol; col++) {
+            int row = startRow;
 
-                    if (((MobileUnit) unit).getAttackCountdown() > 0){
-                        unit.setHealth((int) (unit.getHealth() * 0.4));
-                        col = col + 2;
-                    }
-
-                    col++;
-                    Optional<Unit> temp = snapshot.getBoard().getUnit(i,col);
-                    if (temp.isEmpty()) break;
-                    unit = temp.get();
+            while (row >= 0 && row <= maxRow) {
+                Optional<Unit> opt = board.getUnit(row, col);
+                if (opt.isEmpty()) {
+                    break;
                 }
-                col = cols;
+
+                Unit unit = opt.get();
+                if (!(unit instanceof MobileUnit mobile)) {
+                    row += direction;
+                    continue;
+                }
+
+                int countdown = mobile.getAttackCountdown();
+                if (countdown < 0) {
+                    break;
+                }
+
+                if (countdown == 0) {
+                    clearColumnSegment(board, col, row, direction, 3);
+                    mergeColumn(board, active, col);
+                    doAttack(mobile, col);
+                } else {
+                    mobile.setAttackCountdown(countdown - 1);
+                    mobile.setHealth((int)(mobile.getHealth() * 1.4));
+                    row += direction * 3;
+                }
             }
         }
     }
+
+    private void doAttack(MobileUnit attacker, int col) {
+        Board board = snapshot.getBoard();
+        Snapshot.Player attackerSide = snapshot.getActivePlayer();
+        Snapshot.Player defenderSide = attackerSide == Snapshot.Player.FIRST
+                ? Snapshot.Player.SECOND
+                : Snapshot.Player.FIRST;
+        Hero defenderHero = snapshot.getHero(defenderSide);
+
+        int maxRow = board.getMaxRowIndex();
+        int midRow = maxRow / 2;
+        int targetRow = attackerSide == Snapshot.Player.FIRST ? midRow : midRow + 1;
+
+        Optional<Unit> optDef = board.getUnit(targetRow, col);
+        int damage = attacker.getHealth();
+
+        if (optDef.isEmpty()) {
+            defenderHero.setHealth(defenderHero.getHealth() - damage);
+        } else {
+            Unit def = optDef.get();
+
+            if (def instanceof MobileUnit defending) {
+                if (defending.getAttackCountdown() >= 0 && defending.getHealth() <= damage) {
+                    clearColumnSegment(board, col, targetRow,
+                            attackerSide == Snapshot.Player.FIRST ? 1 : -1, 3);
+                }
+            }
+
+            int remainingHealth = def.getHealth() - damage;
+            if (remainingHealth <= 0) {
+                board.removeUnit(targetRow, col);
+            } else {
+                def.setHealth(remainingHealth);
+            }
+
+            mergeColumn(board, defenderSide, col);
+        }
+    }
+
+    private void clearColumnSegment(Board board, int col, int startRow,
+                                    int direction, int length) {
+        int maxRow = board.getMaxRowIndex();
+        for (int offset = 0; offset < length; offset++) {
+            int r = startRow + direction * offset;
+            if (r >= 0 && r <= maxRow) {
+                board.removeUnit(r, col);
+            }
+        }
+    }
+
+    private void mergeColumn(Board board, Snapshot.Player player, int col) {
+        if (player == Snapshot.Player.FIRST) {
+            UnitMerger.columnManagerP1(board, col);
+        } else {
+            UnitMerger.columnManagerP2(board, col);
+        }
+    }
+
+
 
     @Override
     public void skipTurn() {
@@ -249,7 +324,7 @@ public class MyEventHandler4_1 implements EventHandler {
             // movimento
             snapshot.getBoard().addUnit(to.rowIndex(), to.columnIndex(), sourceUnit);
             snapshot.getBoard().removeUnit(from.rowIndex(), from.columnIndex());
-            
+            UnitMerger.boardHandler(snapshot.getBoard());  //TODO danial pls look at this
             // diminuisco azioni
             snapshot.setActionsRemaining(snapshot.getActionsRemaining() - 1);
             
