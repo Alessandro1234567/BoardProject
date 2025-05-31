@@ -28,6 +28,7 @@ public class MyEventHandler4_1 implements EventHandler {
     public void newGame(String firstHero, String secondHero) {
         snapshot = new RealSnapshot(firstHero, secondHero, 7, 10);
         UnitMerger.boardHandler(snapshot.getBoard());
+        addReinforcementsMax(2);
         displayManager.drawSnapshot(
                 snapshot,
                 "Game has started."
@@ -81,6 +82,7 @@ public class MyEventHandler4_1 implements EventHandler {
                 }
             }
         }
+        addReinforcementsMax(2);
     }
 
     private void doAttack(MobileUnit attacker, int col) {
@@ -138,6 +140,7 @@ public class MyEventHandler4_1 implements EventHandler {
         } else {
             UnitMerger.columnManagerP2(board, col);
         }
+        addReinforcementsMax(2);
     }
 
 
@@ -145,13 +148,20 @@ public class MyEventHandler4_1 implements EventHandler {
     @Override
     public void skipTurn() {
         attack();
-        ((HeroImpl)snapshot.getHero(snapshot.getActivePlayer())).setReinforcements(3);
         snapshot.setActivePlayer((snapshot.getActivePlayer() == Snapshot.Player.FIRST) ? Snapshot.Player.SECOND : Snapshot.Player.FIRST);
         snapshot.setActionsRemaining(3);
+        addReinforcementsMax(2);
         displayManager.drawSnapshot(
                 (snapshot),
-                "Player skipped turn."
+                "It's the turn of "+ ((HeroImpl)snapshot.getHero(snapshot.getActivePlayer())).getName()
         );
+    }
+
+    //Da valore massimo di reinforcements chiamati
+    private void addReinforcementsMax(int value){
+        ((HeroImpl)snapshot.getHero(snapshot.getActivePlayer())).setReinforcements(
+                ((HeroImpl)snapshot.getHero(snapshot.getActivePlayer())).getReinforcements()
+                        +((int)(Math.random() * value)+1));
     }
 
     @Override
@@ -182,9 +192,12 @@ public class MyEventHandler4_1 implements EventHandler {
         ((HeroImpl)snapshot.getHero(player)).setReinforcements(0);
         displayManager.drawSnapshot(
                 snapshot,
-                "This is another dummy game snapshot, to test animations."
+                "Reinforcements!."
         );
         snapshot.setActionsRemaining(snapshot.getActionsRemaining() - 1);
+        if (snapshot.getActionsRemaining() == 0){
+            skipTurn();
+        }
     }
 
     @Override
@@ -336,6 +349,9 @@ public class MyEventHandler4_1 implements EventHandler {
                 throw new RuntimeException(ex);
             }
         }
+        if (snapshot.getActionsRemaining() == 0){
+            skipTurn();
+        }
     }
 
     //metodo ausiliare per spostare in avanti unità
@@ -369,9 +385,14 @@ public class MyEventHandler4_1 implements EventHandler {
                 return;
             }
             snapshot.getBoard().removeUnit(rowIndex, columnIndex);
+            UnitMerger.collapse(snapshot.getBoard());
             displayManager.drawSnapshot(snapshot, "Unit deleted at (" + rowIndex + ", " + columnIndex + ")");
             snapshot.setActionsRemaining(snapshot.getActionsRemaining() - 1);
+            addReinforcementsMax(0);
             //((HeroImpl)snapshot.getHero(snapshot.getActivePlayer())).setReinforcements(0);
+            if (snapshot.getActionsRemaining() == 0){
+                skipTurn();
+            }
         }
     }
 } 
