@@ -52,11 +52,11 @@ public class UnitMerger {
 
         //check if on the same ver line
         for (int i = 0; i <= maxColumnIndex; i++) {
-            for (int j = 0; j <= maxRowIndex/2 - 2; j++) {
+            for (int j = 0; j <= maxRowIndex / 2 - 2; j++) {
 
                 findVertMatchHelp(board, vertMatches, i, j);
             }
-            for (int j = maxRowIndex/2+1; j <= maxRowIndex - 2; j++) {
+            for (int j = maxRowIndex / 2 + 1; j <= maxRowIndex - 2; j++) {
 
                 findVertMatchHelp(board, vertMatches, i, j);
             }
@@ -230,7 +230,5 @@ public class UnitMerger {
         board.addUnit(row + 1, col, bigUnit);
         board.addUnit(row + 2, col, bigUnit);
     }
-
-
 }
 

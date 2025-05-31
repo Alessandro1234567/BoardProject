@@ -44,7 +44,7 @@ public class AnotherDummySnapshot extends AbstractSnapshot implements Snapshot {
         bigFairy.setHealth(15);
         bigFairy.isBigUnit = true;
 
-//        //Player 2
+        //Player 2
 //        board.addUnit(0,0, new Fairy(THREE));
 //        board.addUnit(3,0, new Fairy(THREE));
         board.addUnit(4, 0, new Fairy(THREE));
@@ -57,6 +57,8 @@ public class AnotherDummySnapshot extends AbstractSnapshot implements Snapshot {
         board.addUnit(2, 7, new Unicorn(ONE));
         board.addUnit(3, 7, new Unicorn(ONE));
         board.addUnit(4, 7, new Unicorn(ONE));
+        //board.addUnit(3, 5, new Unicorn(ONE));
+        board.addUnit(4, 5, new Unicorn(ONE));
         board.addUnit(3, 6, new Butterfly(TWO));
         board.addUnit(4, 6, new Butterfly(TWO));
         board.addUnit(5, 6, new Butterfly(TWO));
@@ -75,12 +77,16 @@ public class AnotherDummySnapshot extends AbstractSnapshot implements Snapshot {
         board.addUnit(7, 2, new Butterfly(TWO));
         board.addUnit(8, 2, new Fairy(ONE));
         board.addUnit(6, 4, new Wall());
-        board.addUnit(6, 5, new Unicorn(ONE));
-        board.addUnit(7, 5, new Unicorn(ONE));
+        //board.addUnit(6, 5, new Unicorn(ONE));
+        //board.addUnit(7, 5, new Unicorn(ONE));
         board.addUnit(8, 5, new Unicorn(ONE));
         board.addUnit(9, 5, new Fairy(THREE));
         board.addUnit(6, 7, new Butterfly(ONE));
         board.addUnit(7, 7, new Butterfly(ONE));
+
+        board.addUnit(4,1, new Butterfly(ONE));
+        board.addUnit(5,1, new Butterfly(ONE));
+        board.addUnit(6,1, new Butterfly(ONE));
 
         UnitMerger.boardHandler(board);
     }
