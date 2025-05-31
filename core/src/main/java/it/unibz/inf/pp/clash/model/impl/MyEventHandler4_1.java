@@ -4,7 +4,6 @@ import it.unibz.inf.pp.clash.model.EventHandler;
 import it.unibz.inf.pp.clash.model.snapshot.Board;
 import it.unibz.inf.pp.clash.model.snapshot.Snapshot;
 import it.unibz.inf.pp.clash.model.snapshot.impl.HeroImpl;
-import it.unibz.inf.pp.clash.model.snapshot.impl.dummy.DummySnapshot;
 import it.unibz.inf.pp.clash.model.snapshot.impl.dummy.RealSnapshot;
 import it.unibz.inf.pp.clash.model.snapshot.units.MobileUnit;
 import it.unibz.inf.pp.clash.model.snapshot.units.Unit;
