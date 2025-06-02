@@ -201,6 +201,7 @@ public class MyEventHandler4_1 implements EventHandler {
                 "Reinforcements!."
         );
         snapshot.setActionsRemaining(snapshot.getActionsRemaining() - 1);
+        UnitMerger.boardHandler(snapshot.getBoard());
         if (snapshot.getActionsRemaining() == 0){
             skipTurn();
         }
@@ -396,6 +397,7 @@ public class MyEventHandler4_1 implements EventHandler {
             snapshot.setActionsRemaining(snapshot.getActionsRemaining() - 1);
             addReinforcementsMax(0);
             //((HeroImpl)snapshot.getHero(snapshot.getActivePlayer())).setReinforcements(0);
+            UnitMerger.boardHandler(snapshot.getBoard());
             if (snapshot.getActionsRemaining() == 0){
                 skipTurn();
             }
