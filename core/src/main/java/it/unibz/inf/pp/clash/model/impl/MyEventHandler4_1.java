@@ -150,10 +150,13 @@ public class MyEventHandler4_1 implements EventHandler {
         attack();
         snapshot.setActivePlayer((snapshot.getActivePlayer() == Snapshot.Player.FIRST) ? Snapshot.Player.SECOND : Snapshot.Player.FIRST);
         snapshot.setActionsRemaining(3);
+//        if (snapshot.getHero(snapshot.getActivePlayer()).getHealth() <= 0){
+//            snapshot.setActivePlayer(null);
+//        }
         addReinforcementsMax(2);
         displayManager.drawSnapshot(
                 (snapshot),
-                "It's the turn of "+ ((HeroImpl)snapshot.getHero(snapshot.getActivePlayer())).getName()
+                "It's the turn of "+ (snapshot.getHero(snapshot.getActivePlayer())).getName()
         );
     }
 
@@ -181,6 +184,9 @@ public class MyEventHandler4_1 implements EventHandler {
                 throw new RuntimeException(e);
             }
             return;
+        }
+        if(countEmptyTiles(snapshot.getActivePlayer()) < snapshot.getSizeOfReinforcement(snapshot.getActivePlayer())){
+            ((HeroImpl)snapshot.getHero(snapshot.getActivePlayer())).setReinforcements(countEmptyTiles(snapshot.getActivePlayer()));
         }
         Snapshot.Player player = snapshot.getActivePlayer();
         UnitGenerator.populateTiles(
@@ -394,5 +400,28 @@ public class MyEventHandler4_1 implements EventHandler {
                 skipTurn();
             }
         }
+    }
+
+    private int countEmptyTiles(Snapshot.Player player) {
+        Board board = snapshot.getBoard();
+        int maxRow = board.getMaxRowIndex();
+        int maxCol = board.getMaxColumnIndex();
+        int emptyCount = 0;
+        int startRow, endRow;
+        if (player == Snapshot.Player.FIRST) {
+            startRow = (maxRow / 2) + 1;
+            endRow = maxRow;
+        } else {
+            startRow = 0;
+            endRow = maxRow / 2;
+        }
+        for (int row = startRow; row <= endRow; row++) {
+            for (int col = 0; col <= maxCol; col++) {
+                if (board.getUnit(row, col).isEmpty()) {
+                    emptyCount++;
+                }
+            }
+        }
+        return emptyCount;
     }
 } 
