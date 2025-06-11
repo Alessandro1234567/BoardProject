@@ -147,6 +147,10 @@ public class MyEventHandler4_1 implements EventHandler {
 
     @Override
     public void skipTurn() {
+        if(arePlayersAlive()){
+            isGameOver();
+            return;
+        }
         attack();
         snapshot.setActivePlayer((snapshot.getActivePlayer() == Snapshot.Player.FIRST) ? Snapshot.Player.SECOND : Snapshot.Player.FIRST);
         snapshot.setActionsRemaining(3);
@@ -158,6 +162,9 @@ public class MyEventHandler4_1 implements EventHandler {
                 (snapshot),
                 "It's the turn of "+ (snapshot.getHero(snapshot.getActivePlayer())).getName()
         );
+        if(arePlayersAlive()){
+            isGameOver();
+        }
     }
 
     //Da valore massimo di reinforcements chiamati
@@ -169,6 +176,10 @@ public class MyEventHandler4_1 implements EventHandler {
 
     @Override
     public void callReinforcement() {
+        if(arePlayersAlive()){
+            isGameOver();
+            return;
+        }
         if (snapshot.getActionsRemaining() <= 0) {
             try {
                 displayManager.updateMessage("No actions remaining for this turn!");
@@ -209,6 +220,10 @@ public class MyEventHandler4_1 implements EventHandler {
 
     @Override
     public void requestInformation(int rowIndex, int columnIndex) {
+        if(arePlayersAlive()){
+            isGameOver();
+            return;
+        }
         Optional<Unit> unitOpt = snapshot.getBoard().getUnit(rowIndex, columnIndex);
         String messaggio = unitOpt.map(unit -> String.format("UNIT: %s\nHealth: %d", unit.getClass().getSimpleName(), unit.getHealth())).orElse("");
         try {
@@ -221,6 +236,10 @@ public class MyEventHandler4_1 implements EventHandler {
     //metodo principale per selezionare e in seguito muovere pedina
     @Override
     public void selectTile(int rowIndex, int columnIndex) {
+        if(arePlayersAlive()){
+            isGameOver();
+            return;
+        }
         Board.TileCoordinates clickedTile = new Board.TileCoordinates(rowIndex, columnIndex);
         //verifico che non abbia già selezionato una casella precedentemente
         if (snapshot.getOngoingMove().isEmpty()) {
@@ -344,7 +363,7 @@ public class MyEventHandler4_1 implements EventHandler {
             // movimento
             snapshot.getBoard().addUnit(to.rowIndex(), to.columnIndex(), sourceUnit);
             snapshot.getBoard().removeUnit(from.rowIndex(), from.columnIndex());
-            UnitMerger.boardHandler(snapshot.getBoard());  //TODO danial pls look at this
+            UnitMerger.boardHandler(snapshot.getBoard());
             // diminuisco azioni
             snapshot.setActionsRemaining(snapshot.getActionsRemaining() - 1);
             
@@ -381,6 +400,10 @@ public class MyEventHandler4_1 implements EventHandler {
     //Metodo per eliminare pedina con tasto destro
     @Override
     public void deleteUnit(int rowIndex, int columnIndex) {
+        if(arePlayersAlive()){
+            isGameOver();
+            return;
+        }
         Optional<Unit> unitOpt = snapshot.getBoard().getUnit(rowIndex, columnIndex);
         if (unitOpt.isPresent()) {
             if (!isOwned(snapshot.getActivePlayer(), rowIndex)) {
@@ -425,5 +448,17 @@ public class MyEventHandler4_1 implements EventHandler {
             }
         }
         return emptyCount;
+    }
+
+    private boolean arePlayersAlive(){
+         return snapshot.getHero(Snapshot.Player.FIRST).getHealth() <= 0 || snapshot.getHero(Snapshot.Player.SECOND).getHealth() <= 0;
+    }
+
+    private void isGameOver(){
+        try {
+            displayManager.updateMessage("GAME OVER!");
+        } catch (NoGameOnScreenException e) {
+            throw new RuntimeException(e);
+        }
     }
 } 

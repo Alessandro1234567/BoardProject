@@ -23,7 +23,7 @@ public class RealSnapshot extends AbstractSnapshot implements Snapshot {
     public RealSnapshot(String firstHeroName, String secondHeroName, int min, int max) {
         super(
                 new HeroImpl(firstHeroName, 20),
-                new HeroImpl(secondHeroName, 10),
+                new HeroImpl(secondHeroName, 1),
                 BoardImpl.createEmptyBoard(11, 7),
                 Player.FIRST,
                 3,
