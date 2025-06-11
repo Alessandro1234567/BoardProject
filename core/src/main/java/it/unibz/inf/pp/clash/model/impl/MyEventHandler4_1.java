@@ -28,7 +28,6 @@ public class MyEventHandler4_1 implements EventHandler {
     public void newGame(String firstHero, String secondHero) {
         snapshot = new RealSnapshot(firstHero, secondHero, 7, 10);
         UnitMerger.boardHandler(snapshot.getBoard());
-        addReinforcementsMax(2);
         displayManager.drawSnapshot(
                 snapshot,
                 "Game has started."
@@ -82,7 +81,7 @@ public class MyEventHandler4_1 implements EventHandler {
                 }
             }
         }
-        addReinforcementsMax(2);
+        addReinforcementsMax(1);
     }
 
     private void doAttack(MobileUnit attacker, int col) {
@@ -140,7 +139,7 @@ public class MyEventHandler4_1 implements EventHandler {
         } else {
             UnitMerger.columnManagerP2(board, col);
         }
-        addReinforcementsMax(2);
+        addReinforcementsMax(3);
     }
 
 
@@ -154,10 +153,6 @@ public class MyEventHandler4_1 implements EventHandler {
         attack();
         snapshot.setActivePlayer((snapshot.getActivePlayer() == Snapshot.Player.FIRST) ? Snapshot.Player.SECOND : Snapshot.Player.FIRST);
         snapshot.setActionsRemaining(3);
-//        if (snapshot.getHero(snapshot.getActivePlayer()).getHealth() <= 0){
-//            snapshot.setActivePlayer(null);
-//        }
-        addReinforcementsMax(2);
         displayManager.drawSnapshot(
                 (snapshot),
                 "It's the turn of "+ (snapshot.getHero(snapshot.getActivePlayer())).getName()
@@ -418,7 +413,7 @@ public class MyEventHandler4_1 implements EventHandler {
             UnitMerger.collapse(snapshot.getBoard());
             displayManager.drawSnapshot(snapshot, "Unit deleted at (" + rowIndex + ", " + columnIndex + ")");
             snapshot.setActionsRemaining(snapshot.getActionsRemaining() - 1);
-            addReinforcementsMax(0);
+            addReinforcementsMax(1);
             //((HeroImpl)snapshot.getHero(snapshot.getActivePlayer())).setReinforcements(0);
             UnitMerger.boardHandler(snapshot.getBoard());
             if (snapshot.getActionsRemaining() == 0){
