@@ -109,6 +109,10 @@ public class UnitMerger {
         return horMatches;
     }
 
+    /*Takes in a Optional<Unit> and returns:
+    * a AbstractMobileUnit if it is not empty
+    * null if it is empty
+    * */
     public static AbstractMobileUnit optToAbUnit(Optional<Unit> opt) {
         if (opt.isEmpty()) {
             return null;
@@ -121,11 +125,20 @@ public class UnitMerger {
         return null;
     }
 
+    /*Takes in a Optional<Unit> and returns:
+     * a Unit if it is not empty
+     * null if it is empty
+     * */
     public static Unit optToUnit(Optional<Unit> opt) {
         return opt.orElse(null);
 
     }
 
+    /*Rearrange the board in the following order (columnwise, from the center to other extreme):
+    * walls
+    * big units
+    * units
+    * */
     public static void collapse(Board board) {
         int maxColumnIndex = board.getMaxColumnIndex();
         for (int i = 0; i <= maxColumnIndex; i++) {
