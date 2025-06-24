@@ -2,7 +2,7 @@
 
 ## 👥 Group Members
 
-| Nome Completo      | GitHub Username    |
+| Student Name    | GitHub Username    |
 |--------------------|--------------------|
 | Zago Alessandro     | @Alessandro1234567   |
 | Davoodi Danial     | @Danial-BZ   |
