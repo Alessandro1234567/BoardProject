@@ -37,14 +37,14 @@ Then to start the application, run the method [DesktopLauncher.main](https://git
 
 ---
 
-## 📝 Descrizione del progetto
+## Project description
 
  Inserisci una descrizione sintetica ma chiara del progetto.  
 > Cosa fa, qual è lo scopo, in che contesto è stato realizzato.
 
 ---
 
-## 📖 Guida utente
+## User guide
 
 > Scrivi qui una guida rapida su come usare il programma.  
 > In alternativa, inserisci il link a un video dimostrativo:
@@ -53,7 +53,7 @@ Then to start the application, run the method [DesktopLauncher.main](https://git
 
 ---
 
-## 🧠 Panoramica sull'implementazione
+## Implementation overview
 
 ### Componenti principali e interfacce
 
