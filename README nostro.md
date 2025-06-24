@@ -1,6 +1,6 @@
 # BoardGame
 
-## 👥 Group Members
+##  Group Members
 
 | Student Name    | GitHub Username    |
 |--------------------|--------------------|
