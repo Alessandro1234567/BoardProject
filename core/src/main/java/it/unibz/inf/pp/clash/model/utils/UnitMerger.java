@@ -35,15 +35,13 @@ public class UnitMerger {
     }
 
     private static boolean areValidMatchingUnits(AbstractMobileUnit au1, AbstractMobileUnit au2, AbstractMobileUnit au3) {
-//        boolean sameColor = au1.getColor() == au2.getColor() && au2.getColor() == au3.getColor();
-//        boolean sameClass = au1.getClass() == au2.getClass() && au2.getClass() == au3.getClass();
-//        boolean notBigUnits = au1.getAttackCountdown() == -1 && au2.getAttackCountdown() == -1 && au3.getAttackCountdown() == -1;
-//        return sameColor && sameClass && notBigUnits;
 
         return au1.equals(au2) && au1.equals(au3) &&
                 !au1.isBigUnit && !au2.isBigUnit && !au3.isBigUnit;
     }
 
+    /*Given an input board, finds the units which are aligned vertically, returns a list of Coordinate.
+    Only the first unit of the 3 aligned is saved, since the other 2 can be computed*/
     public static List<Coordinate> findVertMatch(Board board) {
 
         List<Coordinate> vertMatches = new ArrayList<>();
@@ -64,6 +62,7 @@ public class UnitMerger {
         return vertMatches;
     }
 
+    /*Helper method to check if 3 units are matching and saves the coordinates of the first unit of the 3*/
     private static void findVertMatchHelp(Board board, List<Coordinate> vertMatches, int i, int j) {
         Optional<Unit> opt1 = board.getUnit(j, i);
         Optional<Unit> opt2 = board.getUnit(j + 1, i);
@@ -80,9 +79,11 @@ public class UnitMerger {
         }
     }
 
+    /*Given an input board, finds the units which are aligned horizontally, returns a list of Coordinate.
+    Only the first unit of the 3 aligned is saved, since the other 2 can be computed*/
     public static List<Coordinate> findHorMatch(Board board) {
 
-        List<Coordinate> vertMatches = new ArrayList<>();
+        List<Coordinate> horMatches = new ArrayList<>();
         int maxColumnIndex = board.getMaxColumnIndex();
         int maxRowIndex = board.getMaxRowIndex();
 
@@ -101,13 +102,17 @@ public class UnitMerger {
                 if (au1 == null || au2 == null || au3 == null) continue;
 
                 if (areValidMatchingUnits(au1, au2, au3)) {
-                    vertMatches.add(new Coordinate(i, j));
+                    horMatches.add(new Coordinate(i, j));
                 }
             }
         }
-        return vertMatches;
+        return horMatches;
     }
 
+    /*Takes in a Optional<Unit> and returns:
+    * a AbstractMobileUnit if it is not empty
+    * null if it is empty
+    * */
     public static AbstractMobileUnit optToAbUnit(Optional<Unit> opt) {
         if (opt.isEmpty()) {
             return null;
@@ -120,11 +125,20 @@ public class UnitMerger {
         return null;
     }
 
+    /*Takes in a Optional<Unit> and returns:
+     * a Unit if it is not empty
+     * null if it is empty
+     * */
     public static Unit optToUnit(Optional<Unit> opt) {
         return opt.orElse(null);
 
     }
 
+    /*Rearrange the board in the following order (columnwise, from the center to other extreme):
+    * walls
+    * big units
+    * units
+    * */
     public static void collapse(Board board) {
         int maxColumnIndex = board.getMaxColumnIndex();
         for (int i = 0; i <= maxColumnIndex; i++) {
