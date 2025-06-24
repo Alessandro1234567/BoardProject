@@ -1,12 +1,6 @@
 package dummy;
 
-import it.unibz.inf.pp.clash.model.snapshot.Board;
-import it.unibz.inf.pp.clash.model.snapshot.Snapshot;
-import it.unibz.inf.pp.clash.model.snapshot.impl.BoardImpl;
-import it.unibz.inf.pp.clash.model.snapshot.impl.dummy.RealSnapshot;
-import it.unibz.inf.pp.clash.model.snapshot.units.MobileUnit;
-import it.unibz.inf.pp.clash.model.snapshot.units.Unit;
-import it.unibz.inf.pp.clash.model.snapshot.units.impl.Unicorn;
+import it.unibz.inf.pp.clash.model.snapshot.impl.RealSnapshot;
 import org.junit.jupiter.api.Test;
 
 import static org.junit.jupiter.api.Assertions.assertFalse;

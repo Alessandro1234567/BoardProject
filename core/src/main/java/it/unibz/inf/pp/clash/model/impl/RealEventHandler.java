@@ -5,7 +5,7 @@ import it.unibz.inf.pp.clash.model.snapshot.Board;
 import it.unibz.inf.pp.clash.model.snapshot.Hero;
 import it.unibz.inf.pp.clash.model.snapshot.Snapshot;
 import it.unibz.inf.pp.clash.model.snapshot.impl.HeroImpl;
-import it.unibz.inf.pp.clash.model.snapshot.impl.dummy.RealSnapshot;
+import it.unibz.inf.pp.clash.model.snapshot.impl.RealSnapshot;
 import it.unibz.inf.pp.clash.model.snapshot.units.MobileUnit;
 import it.unibz.inf.pp.clash.model.snapshot.units.Unit;
 import it.unibz.inf.pp.clash.model.utils.UnitGenerator;
@@ -15,12 +15,12 @@ import it.unibz.inf.pp.clash.view.exceptions.NoGameOnScreenException;
 
 import java.util.Optional;
 
-public class MyEventHandler4_1 implements EventHandler {
+public class RealEventHandler implements EventHandler {
 
     private final DisplayManager displayManager;
     private RealSnapshot snapshot;
 
-    public MyEventHandler4_1(DisplayManager displayManager) {
+    public RealEventHandler(DisplayManager displayManager) {
         this.displayManager = displayManager;
     }
 
@@ -28,7 +28,6 @@ public class MyEventHandler4_1 implements EventHandler {
     public void newGame(String firstHero, String secondHero) {
         snapshot = new RealSnapshot(firstHero, secondHero, 7, 10);
         UnitMerger.boardHandler(snapshot.getBoard());
-        addReinforcementsMax(2);
         displayManager.drawSnapshot(
                 snapshot,
                 "Game has started."
@@ -82,7 +81,7 @@ public class MyEventHandler4_1 implements EventHandler {
                 }
             }
         }
-        addReinforcementsMax(2);
+        addReinforcementsMax(1);
     }
 
     private void doAttack(MobileUnit attacker, int col) {
@@ -144,31 +143,41 @@ public class MyEventHandler4_1 implements EventHandler {
     }
 
 
-
     @Override
     public void skipTurn() {
+        if(arePlayersAlive()){
+            isGameOver();
+            return;
+        }
         attack();
         snapshot.setActivePlayer((snapshot.getActivePlayer() == Snapshot.Player.FIRST) ? Snapshot.Player.SECOND : Snapshot.Player.FIRST);
         snapshot.setActionsRemaining(3);
-//        if (snapshot.getHero(snapshot.getActivePlayer()).getHealth() <= 0){
-//            snapshot.setActivePlayer(null);
-//        }
-        addReinforcementsMax(2);
         displayManager.drawSnapshot(
                 (snapshot),
                 "It's the turn of "+ (snapshot.getHero(snapshot.getActivePlayer())).getName()
         );
+        if(arePlayersAlive()){
+            isGameOver();
+        }
     }
 
-    //Da valore massimo di reinforcements chiamati
+    /**
+     * This auxiliary method gives the max number of reinforcements that could be spawned
+     *  @param value max value
+     */
     private void addReinforcementsMax(int value){
         ((HeroImpl)snapshot.getHero(snapshot.getActivePlayer())).setReinforcements(
                 ((HeroImpl)snapshot.getHero(snapshot.getActivePlayer())).getReinforcements()
                         +((int)(Math.random() * value)+1));
     }
 
+    //method that calls reinforcements
     @Override
     public void callReinforcement() {
+        if(arePlayersAlive()){
+            isGameOver();
+            return;
+        }
         if (snapshot.getActionsRemaining() <= 0) {
             try {
                 displayManager.updateMessage("No actions remaining for this turn!");
@@ -207,8 +216,13 @@ public class MyEventHandler4_1 implements EventHandler {
         }
     }
 
+    //method that gives information by hovering on unit
     @Override
     public void requestInformation(int rowIndex, int columnIndex) {
+        if(arePlayersAlive()){
+            isGameOver();
+            return;
+        }
         Optional<Unit> unitOpt = snapshot.getBoard().getUnit(rowIndex, columnIndex);
         String messaggio = unitOpt.map(unit -> String.format("UNIT: %s\nHealth: %d", unit.getClass().getSimpleName(), unit.getHealth())).orElse("");
         try {
@@ -218,16 +232,20 @@ public class MyEventHandler4_1 implements EventHandler {
         }
     }
 
-    //metodo principale per selezionare e in seguito muovere pedina
+    //main method to move a unit
     @Override
     public void selectTile(int rowIndex, int columnIndex) {
+        if(arePlayersAlive()){
+            isGameOver();
+            return;
+        }
         Board.TileCoordinates clickedTile = new Board.TileCoordinates(rowIndex, columnIndex);
-        //verifico che non abbia già selezionato una casella precedentemente
+        //check if the tile is not previously selected
         if (snapshot.getOngoingMove().isEmpty()) {
             Optional<Unit> unitOpt = snapshot.getBoard().getUnit(rowIndex, columnIndex);
-            //verifico la presenza di un unità
+            //check presence of unit
             if (unitOpt.isPresent()) {
-                //controllo se è mobile 
+                //checks if it's mobile unit
                 Unit unit = unitOpt.get();
                 if (!(unit instanceof MobileUnit)) {
                     try {
@@ -246,7 +264,7 @@ public class MyEventHandler4_1 implements EventHandler {
                     return;
                 }
 
-                // Controlla che non sia tra due unità
+                // Check if it's not between two units
                 int direction = snapshot.getActivePlayer() == Snapshot.Player.FIRST ? 1 : -1;
                 int nextRow = rowIndex + direction;
                 if (nextRow >= 0 && nextRow <= snapshot.getBoard().getMaxRowIndex()) {
@@ -272,22 +290,20 @@ public class MyEventHandler4_1 implements EventHandler {
             }
             return;
         }
-        //snip di codice per deselezionare cliccando la stessa casella
+        //snip of code to deselect the previously selected tile
         if (snapshot.getOngoingMove().get().equals(clickedTile)) {
             snapshot.setOngoingMove(null);
             displayManager.drawSnapshot(snapshot, "Unit deselected!");
             return;
         }
-        //movimento e reset
+        //movement and reset
         moveUnit(snapshot.getOngoingMove().get(), clickedTile);
         snapshot.setOngoingMove(null);
-        
-        //Verifica se usare metodo move forward (sfortunatamente c'era un bug che se si selezionava direttamente la prima casella libera
-        //mi spostava la pediana su quella successiva (da migliorare)
+
         int direction = snapshot.getActivePlayer() == Snapshot.Player.FIRST ? -1 : 1;
         int prevRow = clickedTile.rowIndex() + direction;
         
-        // Verifica se la casella antecedente è vuota e non territorio del giocatore
+        // Check if the previous tile is empty and not on opponets field
         if (isOwned(snapshot.getActivePlayer(), prevRow) &&
             snapshot.getBoard().getUnit(prevRow, clickedTile.columnIndex()).isEmpty()) {
 
@@ -298,7 +314,13 @@ public class MyEventHandler4_1 implements EventHandler {
             }
         }
     }
-    //metodo ausiliario per verificare appartenenza board
+
+    /**
+     * Auxiliary method used to check if it's the current player's field
+     * @param activePlayer
+     * @param rowIndex
+     * @return boolean
+     */
     private boolean isOwned(Snapshot.Player activePlayer, int rowIndex) {
         if (activePlayer == Snapshot.Player.FIRST) {
             return rowIndex > 5;
@@ -309,7 +331,7 @@ public class MyEventHandler4_1 implements EventHandler {
     }
 
     private void moveUnit(Board.TileCoordinates from, Board.TileCoordinates to) {
-        // controllo se ci sono azioni rimanenti
+        // control if I have remaining moves
         if (snapshot.getActionsRemaining() <= 0) {
             try {
                 displayManager.updateMessage("No actions remaining for this turn!");
@@ -324,13 +346,13 @@ public class MyEventHandler4_1 implements EventHandler {
 
         Unit sourceUnit = sourceUnitOpt.get();
 
-        // controllo se è il campo avversario
+        // control if it's opponent field
         if (!isOwned(snapshot.getActivePlayer(), to.rowIndex())) {
             displayManager.drawSnapshot(snapshot, "Cannot move unit to opponent's territory!");
             return;
         }
 
-        // controllo se casella occupata
+        // control if tile is occupied
         if (destUnitOpt.isPresent()) {
             try {
                 displayManager.updateMessage("Cannot move unit: destination tile is occupied.");
@@ -341,11 +363,11 @@ public class MyEventHandler4_1 implements EventHandler {
         }
 
         try {
-            // movimento
+            // move
             snapshot.getBoard().addUnit(to.rowIndex(), to.columnIndex(), sourceUnit);
             snapshot.getBoard().removeUnit(from.rowIndex(), from.columnIndex());
-            UnitMerger.boardHandler(snapshot.getBoard());  //TODO danial pls look at this
-            // diminuisco azioni
+            UnitMerger.boardHandler(snapshot.getBoard());
+            // decreasing actions
             snapshot.setActionsRemaining(snapshot.getActionsRemaining() - 1);
             
             displayManager.drawSnapshot(snapshot, "Unit moved successfully. Actions remaining: " + snapshot.getActionsRemaining());
@@ -361,7 +383,11 @@ public class MyEventHandler4_1 implements EventHandler {
         }
     }
 
-    //metodo ausiliare per spostare in avanti unità
+    /**
+     * auxiliary method used to move forward units near center of the map
+     * @param unit
+     * @param coordinates
+     */
     private void moveForward(Unit unit, Board.TileCoordinates coordinates) {
         int startRow = snapshot.getActivePlayer() == Snapshot.Player.FIRST ? 6 : 5;
         int direction = snapshot.getActivePlayer() == Snapshot.Player.FIRST ? 1 : -1;
@@ -378,9 +404,13 @@ public class MyEventHandler4_1 implements EventHandler {
         }
     }
 
-    //Metodo per eliminare pedina con tasto destro
+    //Method to eliminate selected unit (right click)
     @Override
     public void deleteUnit(int rowIndex, int columnIndex) {
+        if(arePlayersAlive()){
+            isGameOver();
+            return;
+        }
         Optional<Unit> unitOpt = snapshot.getBoard().getUnit(rowIndex, columnIndex);
         if (unitOpt.isPresent()) {
             if (!isOwned(snapshot.getActivePlayer(), rowIndex)) {
@@ -395,8 +425,7 @@ public class MyEventHandler4_1 implements EventHandler {
             UnitMerger.collapse(snapshot.getBoard());
             displayManager.drawSnapshot(snapshot, "Unit deleted at (" + rowIndex + ", " + columnIndex + ")");
             snapshot.setActionsRemaining(snapshot.getActionsRemaining() - 1);
-            addReinforcementsMax(0);
-            //((HeroImpl)snapshot.getHero(snapshot.getActivePlayer())).setReinforcements(0);
+            addReinforcementsMax(1);
             UnitMerger.boardHandler(snapshot.getBoard());
             if (snapshot.getActionsRemaining() == 0){
                 skipTurn();
@@ -405,6 +434,12 @@ public class MyEventHandler4_1 implements EventHandler {
         }
     }
 
+    /**
+     * Method that counts the number of empty tiles on the board
+     * This metod is used as auxiliary method of call reinforcements
+     * @param player
+     * @return int
+     */
     private int countEmptyTiles(Snapshot.Player player) {
         Board board = snapshot.getBoard();
         int maxRow = board.getMaxRowIndex();
@@ -426,5 +461,24 @@ public class MyEventHandler4_1 implements EventHandler {
             }
         }
         return emptyCount;
+    }
+
+    /**
+     * Auxiliary method to check if the game has terminated
+     * @return boolean
+     */
+    private boolean arePlayersAlive(){
+         return snapshot.getHero(Snapshot.Player.FIRST).getHealth() <= 0 || snapshot.getHero(Snapshot.Player.SECOND).getHealth() <= 0;
+    }
+
+    /**
+     * Auxiliary method to terminate the game
+     */
+    private void isGameOver(){
+        try {
+            displayManager.updateMessage("GAME OVER!");
+        } catch (NoGameOnScreenException e) {
+            throw new RuntimeException(e);
+        }
     }
 } 
