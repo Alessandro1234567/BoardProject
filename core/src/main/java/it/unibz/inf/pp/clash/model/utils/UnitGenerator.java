@@ -36,6 +36,18 @@ public class UnitGenerator {
         return temp;
     }
 
+    /**
+     * Populates the specified player's half of the board with randomly generated units.
+
+     * @param player The player (FIRST or SECOND) whose side of the board will be populated.
+     * @param board The game board where units will be placed.
+     * @param min The minimum number of units to generate.
+     * @param max The maximum number of units to generate.
+
+     * This method generates a random number of units between {@code min} and {@code max} (inclusive),
+     * and places them in random columns within the player's half of the board.
+     * If a tile is already occupied, it searches for the next available row in the same column.
+     */
     public static void populateTiles(Snapshot.Player player, Board board, int min, int max) {
         System.out.println(player.name());
         int increment = player.equals(Snapshot.Player.FIRST) ? 1 : -1;

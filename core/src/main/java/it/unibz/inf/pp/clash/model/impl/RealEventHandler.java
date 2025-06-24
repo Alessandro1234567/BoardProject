@@ -39,6 +39,30 @@ public class RealEventHandler implements EventHandler {
         displayManager.drawHomeScreen();
     }
 
+    /**
+     * Executes the attack phase for the active player.
+
+     * This method iterates through each column of the board and processes attacking units
+     * located in the active player's half of the field. For each unit:
+     * <ul>
+     *   <li>If it is not a {@link MobileUnit}, the scan continues to the next row.</li>
+     *   <li>If its attack countdown is negative, it cannot attack and is skipped.</li>
+     *   <li>If the countdown reaches zero:
+     *     <ul>
+     *       <li>The unit attacks, triggering a column segment clear, merging, and applying damage to a target.</li>
+     *       <li>{@link #doAttack(MobileUnit, int)} is invoked to resolve the attack logic.</li>
+     *     </ul>
+     *   </li>
+     *   <li>If the countdown is greater than zero:
+     *     <ul>
+     *       <li>The countdown is reduced by one.</li>
+     *       <li>The unit's health is increased by 40% as a "charge-up" effect.</li>
+     *       <li>The loop skips 3 rows ahead to avoid multiple activations in the same turn.</li>
+     *     </ul>
+     *   </li>
+     * </ul>
+     * After all columns have been processed, reinforcements are added.
+     */
     public void attack() {
         Snapshot.Player active = snapshot.getActivePlayer();
         Board board = snapshot.getBoard();
