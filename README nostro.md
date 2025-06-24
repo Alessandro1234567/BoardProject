@@ -76,9 +76,12 @@ Then to start the application, run the method [DesktopLauncher.main](https://git
 
 ## Human experience
 
-### Distribuzione del lavoro
+### Work Distribution
 
-- **Nome 1**: ha lavorato su ...
+- **Alessandro Zago**:  
+  I started by creating the `utils` folder, where I implemented the `UnitGenerator` file. This component is responsible for generating units and is used within `RealSnapshot`.  
+  Additionally, I developed the `doAttack` method inside `RealEventHandler`, which handles the attack logic in the game.
+  
 - **Nome 2**: ha curato ...
 - **Nome 3**: si è occupato di ...
 
