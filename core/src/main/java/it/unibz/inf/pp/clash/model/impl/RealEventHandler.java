@@ -81,7 +81,7 @@ public class RealEventHandler implements EventHandler {
                 }
             }
         }
-        addReinforcementsMax(1);
+        addReinforcementsMax((snapshot.getActivePlayer()==Snapshot.Player.FIRST) ? Snapshot.Player.SECOND: Snapshot.Player.FIRST, 1);
     }
 
     private void doAttack(MobileUnit attacker, int col) {
@@ -139,7 +139,7 @@ public class RealEventHandler implements EventHandler {
         } else {
             UnitMerger.columnManagerP2(board, col);
         }
-        addReinforcementsMax(2);
+        addReinforcementsMax(snapshot.getActivePlayer(),2);
     }
 
 
@@ -162,14 +162,16 @@ public class RealEventHandler implements EventHandler {
     }
 
     /**
-     * This auxiliary method gives the max number of reinforcements that could be spawned
-     *  @param value max value
+     * his auxiliary method gives the max number of reinforcements that could be spawned
+     * @param player the player who's getting the reinforcements
+     * @param value max possible value
      */
-    private void addReinforcementsMax(int value){
-        ((HeroImpl)snapshot.getHero(snapshot.getActivePlayer())).setReinforcements(
-                ((HeroImpl)snapshot.getHero(snapshot.getActivePlayer())).getReinforcements()
-                        +((int)(Math.random() * value)+1));
+    private void addReinforcementsMax(Snapshot.Player player, int value) {
+        ((HeroImpl)snapshot.getHero(player)).setReinforcements(
+                ((HeroImpl)snapshot.getHero(player)).getReinforcements()
+                        + ((int)(Math.random() * value) + 1));
     }
+
 
     //method that calls reinforcements
     @Override
@@ -425,7 +427,7 @@ public class RealEventHandler implements EventHandler {
             UnitMerger.collapse(snapshot.getBoard());
             displayManager.drawSnapshot(snapshot, "Unit deleted at (" + rowIndex + ", " + columnIndex + ")");
             snapshot.setActionsRemaining(snapshot.getActionsRemaining() - 1);
-            addReinforcementsMax(1);
+            addReinforcementsMax(snapshot.getActivePlayer(),1);
             UnitMerger.boardHandler(snapshot.getBoard());
             if (snapshot.getActionsRemaining() == 0){
                 skipTurn();
