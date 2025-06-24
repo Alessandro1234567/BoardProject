@@ -1,6 +1,6 @@
-# Nome del Progetto
+# BoardGame
 
-## 👥 Membri del gruppo
+## 👥 Group Members
 
 | Nome Completo      | GitHub Username    |
 |--------------------|--------------------|
@@ -10,32 +10,36 @@
 
 ---
 
-## ⚙️ Istruzioni per compilare ed eseguire il progetto
+## Usage
 
 1. Clona il repository:
-   ```bash
+```bash
    git clone git@github.com:Alessandro1234567/BoardProject.git
    ```
-2. Vai nella cartella del progetto:
-   ```bash
-   cd nome-repo
+2. Run the Gradle wrapper (once is enough):
+```bash
+   gradle wrapper
    ```
-3. Costruisci il progetto:
-   ```bash
-   # Inserisci comando di build (es: make, mvn install, etc.)
+### Starting the application
+> on macOS/Linux
+```bash
+   ./gradlew run
    ```
-4. Esegui il progetto:
-   ```bash
-   # Inserisci comando di esecuzione
+> on Windows
+```bash
+   gradlew.bat run
    ```
+### With an IDE
 
-*Eventuali dipendenze richieste: ...*
+Open this repository as a Gradle project.
+
+Then to start the application, run the method [DesktopLauncher.main](https://github.com/Alessandro1234567/BoardProject/blob/main/desktop/src/it/unibz/inf/pp/clash/DesktopLauncher.java) (in your running configuration, you may need to specify `assets` as the Java working directory).
 
 ---
 
 ## 📝 Descrizione del progetto
 
-> Inserisci una descrizione sintetica ma chiara del progetto.  
+ Inserisci una descrizione sintetica ma chiara del progetto.  
 > Cosa fa, qual è lo scopo, in che contesto è stato realizzato.
 
 ---
