@@ -82,7 +82,9 @@ Then to start the application, run the method [DesktopLauncher.main](https://git
   I started by creating the `utils` folder, where I implemented the `UnitGenerator` file. This component is responsible for generating units and is used within `RealSnapshot`.  
   Additionally, I developed the `doAttack` method inside `RealEventHandler`, which handles the attack logic in the game.
   
-- **Nome 2**: ha curato ...
+- **Danial Davoodi**:
+   I mainly worked on `RealEventHandler`, where I implemented various methods for the game. In addition to the main methods, several auxiliary methods were           created to ensure optimal code maintainability and to prevent potential bugs during gameplay.
+  
 - **Nome 3**: si è occupato di ...
 
 ### Uso di Git
@@ -105,7 +107,8 @@ Then to start the application, run the method [DesktopLauncher.main](https://git
   - **Disadvantage**:  
     In `model/utils/UnitGenerator`, spawning units safely demanded extra synchronization and collision checks, increasing code complexity.
 
-- **Nome 2**: ha avuto difficoltà con ...
+- **Danial Davoodi**:
+  One of the difficulties I encountered while working on this project was the initial challenge of understanding how the game’s code works, and I had to carefully   read through the code and all the declarations and usages of the various methods.
 
 - **Nome 3**: ha imparato a ...
 
