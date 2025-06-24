@@ -88,8 +88,22 @@ Then to start the application, run the method [DesktopLauncher.main](https://git
 
 ### Sfide affrontate (una per membro)
 
-- **Nome 1**: sfida principale affrontata è stata ...
+- **Alessandro Zago**:  
+  During development, I encountered several hurdles that affected efficiency and required focused analysis:
+
+  - **Project Structure**:  
+    Understanding the interdependencies between modules took significant time. I traced folder hierarchies and entry points to identify how to implement feature changes.
+
+  #### Single Board Instance:
+
+  - **Advantage**:  
+    Centralized state in `model/impl/RealEventHandler.doAttack()` made coordinating attack sequences straightforward and reduced data duplication.
+
+  - **Disadvantage**:  
+    In `model/utils/UnitGenerator`, spawning units safely demanded extra synchronization and collision checks, increasing code complexity.
+
 - **Nome 2**: ha avuto difficoltà con ...
+
 - **Nome 3**: ha imparato a ...
 
 ---
