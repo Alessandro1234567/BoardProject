@@ -74,7 +74,7 @@ Then to start the application, run the method [DesktopLauncher.main](https://git
 
 ---
 
-## 👨‍👩‍👧‍👦 Esperienza umana del progetto
+## Human experience
 
 ### Distribuzione del lavoro
 
