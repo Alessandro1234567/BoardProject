@@ -154,7 +154,6 @@ As a result, we had conflicts (which have been resolved fairly easily) only a li
  methods.
 
 #### Nicola Chen
+The initial challenge was to become familiar with code written by another person, after that it was mainly about how to structure the class `UnitMerger` and write clean, factorized and easy to read code.
 
-The initial challenge was to become familiar with code written by another person, after that it was mainly about how to structure the class `UnitMerger`
-and write clean, factorized and easy to read code
 ---
