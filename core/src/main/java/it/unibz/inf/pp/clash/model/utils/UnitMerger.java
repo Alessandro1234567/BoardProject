@@ -189,6 +189,38 @@ public class UnitMerger {
         }
     }
 
+    public static void columnManager(Board board, int col, int start, int end, int currentRow, int cell) {
+        List<AbstractMobileUnit> smallUnits = new ArrayList<>();
+        List<AbstractMobileUnit> bigUnits = new ArrayList<>();
+        List<Wall> walls = new ArrayList<>();
+
+        if (cell > 0) {
+            for (int i = start; i <= end; i += cell) {
+                removeAndStoreUnits(board, col, smallUnits, bigUnits, walls, i);
+            }
+        } else {
+            for (int i = start; i >= end; i += cell) {
+                removeAndStoreUnits(board, col, smallUnits, bigUnits, walls, i);
+            }
+        }
+
+        for (Wall wall : walls) {
+            board.addUnit(currentRow, col, wall);
+            currentRow += cell;
+        }
+
+        for (AbstractMobileUnit bigUnit : bigUnits) {
+            board.addUnit(currentRow, col, bigUnit);
+            currentRow += cell;
+        }
+
+        for (AbstractMobileUnit smallUnit : smallUnits) {
+            board.addUnit(currentRow, col, smallUnit);
+            currentRow += cell;
+        }
+    }
+
+
     /**
      * Rearranges the upper half of the column (Player 2).
      *
@@ -196,30 +228,8 @@ public class UnitMerger {
      * @param col the column index
      */
     public static void columnManagerP2(Board board, int col) {
-        int maxRowIndex = board.getMaxRowIndex() / 2;
-        int currentRow = maxRowIndex;
-        List<AbstractMobileUnit> smallUnits = new ArrayList<>();
-        List<AbstractMobileUnit> bigUnits = new ArrayList<>();
-        List<Wall> walls = new ArrayList<>();
-
-        for (int i = maxRowIndex; i >= 0; i--) {
-            removeAndStoreUnits(board, col, smallUnits, bigUnits, walls, i);
-        }
-
-        for (Wall wall : walls) {
-            board.addUnit(currentRow, col, wall);
-            currentRow--;
-        }
-
-        for (AbstractMobileUnit bigUnit : bigUnits) {
-            board.addUnit(currentRow, col, bigUnit);
-            currentRow--;
-        }
-
-        for (AbstractMobileUnit smallUnit : smallUnits) {
-            board.addUnit(currentRow, col, smallUnit);
-            currentRow--;
-        }
+        int mid = board.getMaxRowIndex() / 2;
+        columnManager(board, col, mid, 0, mid, -1);
     }
 
     /**
@@ -229,32 +239,9 @@ public class UnitMerger {
      * @param col the column index
      */
     public static void columnManagerP1(Board board, int col) {
-        int maxRowIndex = board.getMaxRowIndex();
-        int currentRow = maxRowIndex / 2 + 1;
-        List<AbstractMobileUnit> smallUnits = new ArrayList<>();
-        List<AbstractMobileUnit> bigUnits = new ArrayList<>();
-        List<Wall> walls = new ArrayList<>();
-
-        for (int i = maxRowIndex / 2 + 1; i <= maxRowIndex; i++) {
-            removeAndStoreUnits(board, col, smallUnits, bigUnits, walls, i);
-        }
-
-        for (Wall wall : walls) {
-            board.addUnit(currentRow, col, wall);
-            currentRow++;
-        }
-
-        for (AbstractMobileUnit bigUnit : bigUnits) {
-            board.addUnit(currentRow, col, bigUnit);
-            currentRow++;
-
-        }
-
-        for (AbstractMobileUnit smallUnit : smallUnits) {
-            board.addUnit(currentRow, col, smallUnit);
-            currentRow++;
-
-        }
+        int max = board.getMaxRowIndex();
+        int mid = max / 2 + 1;
+        columnManager(board, col, mid, max, mid, 1);
     }
     /**
      * Helper method that removes units and saves them in a list, to rearrange them later.
