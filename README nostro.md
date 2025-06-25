@@ -102,14 +102,14 @@ We only used Java’s standard libraries.
 
 ### Work Distribution
 
-- **Alessandro Zago**: I started by creating the `utils` folder, where I implemented the `UnitGenerator` file. This
+- **Alessandro Zago**: I started by creating the `utils` folder, where I implemented the `UnitGenerator`class. This
   component is responsible for generating units and is used within `RealSnapshot`.  
-  Additionally, I developed the `doAttack()` method inside `RealEventHandler`, which handles the attack logic in the
+  Additionally, I developed the `doAttack()` method inside `RealEventHandler`class, which handles the attack logic in the
   game.
 
 
 - **Danial Davoodi**:
-  I mainly worked on `RealEventHandler`, where I implemented various methods for the game. In addition to the main
+  I mainly worked on `RealEventHandler`class, where I implemented various methods for the game. In addition to the main
   methods, several auxiliary methods were created to ensure optimal code maintainability and to prevent potential bugs
   during gameplay.
 
