@@ -11,6 +11,8 @@ import java.util.Optional;
 
 public class UnitMerger {
 
+    /*Given an input board, it merges all the units into big units or walls, if there are any.
+    * Rearranges the board and will try to find units to merge until there is none left to merge*/
     public static void boardHandler(Board board) {
         List<Coordinate> vertMatches = findVertMatch(board);
         List<Coordinate> horMatches = findHorMatch(board);
@@ -34,6 +36,7 @@ public class UnitMerger {
         } while (!vertMatches.isEmpty() || !horMatches.isEmpty());
     }
 
+    /*Checks if 3 units are the same type and color*/
     private static boolean areValidMatchingUnits(AbstractMobileUnit au1, AbstractMobileUnit au2, AbstractMobileUnit au3) {
 
         return au1.equals(au2) && au1.equals(au3) &&
