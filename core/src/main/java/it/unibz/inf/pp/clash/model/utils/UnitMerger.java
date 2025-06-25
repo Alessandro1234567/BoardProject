@@ -8,11 +8,22 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 
+/**
+ * Utility class that provides methods to handle unit merging on the board.
+ * The code is not perfectly factorized, I did not know how to do it without breaking anything
+ */
 
 public class UnitMerger {
 
-    /*Given an input board, it merges all the units into big units or walls, if there are any.
-    * Rearranges the board and will try to find units to merge until there is none left to merge*/
+    /**
+     * Handles the merging process on the board. It looks for horizontal and vertical
+     * matches and merges them until no more matches are found. Rearranges the units in the following order (going from center to the other extreme vertically):
+     * - walls
+     * - big units
+     * - small units
+     *
+     * @param board the board on which merging operations are applied
+     */
     public static void boardHandler(Board board) {
         List<Coordinate> vertMatches = findVertMatch(board);
         List<Coordinate> horMatches = findHorMatch(board);
@@ -36,15 +47,27 @@ public class UnitMerger {
         } while (!vertMatches.isEmpty() || !horMatches.isEmpty());
     }
 
-    /*Checks if 3 units are the same type and color*/
+    /**
+     * Checks whether the three provided units are the same type and not already merged.
+     *
+     * @param au1 first unit
+     * @param au2 second unit
+     * @param au3 third unit
+     * @return true if units are of the same type and not already big units
+     */
     private static boolean areValidMatchingUnits(AbstractMobileUnit au1, AbstractMobileUnit au2, AbstractMobileUnit au3) {
 
         return au1.equals(au2) && au1.equals(au3) &&
                 !au1.isBigUnit && !au2.isBigUnit && !au3.isBigUnit;
     }
 
-    /*Given an input board, finds the units which are aligned vertically, returns a list of Coordinate.
-    Only the first unit of the 3 aligned is saved, since the other 2 can be computed*/
+    /**
+     * Finds vertically aligned matching units.
+     * Only the first coordinate (topmost) of each trio is stored.
+     *
+     * @param board the game board
+     * @return list of coordinates where vertical matches start
+     */
     public static List<Coordinate> findVertMatch(Board board) {
 
         List<Coordinate> vertMatches = new ArrayList<>();
@@ -65,7 +88,14 @@ public class UnitMerger {
         return vertMatches;
     }
 
-    /*Helper method to check if 3 units are matching and saves the coordinates of the first unit of the 3*/
+    /**
+     * Helper method to find and collect vertical matches.
+     *
+     * @param board the game board
+     * @param vertMatches list where matches are stored
+     * @param i column index
+     * @param j row index
+     */
     private static void findVertMatchHelp(Board board, List<Coordinate> vertMatches, int i, int j) {
         Optional<Unit> opt1 = board.getUnit(j, i);
         Optional<Unit> opt2 = board.getUnit(j + 1, i);
@@ -82,8 +112,13 @@ public class UnitMerger {
         }
     }
 
-    /*Given an input board, finds the units which are aligned horizontally, returns a list of Coordinate.
-    Only the first unit of the 3 aligned is saved, since the other 2 can be computed*/
+    /**
+     * Finds horizontally aligned matching units.
+     * Only the first coordinate (leftmost) of each trio is stored.
+     *
+     * @param board the game board
+     * @return list of coordinates where horizontal matches start
+     */
     public static List<Coordinate> findHorMatch(Board board) {
 
         List<Coordinate> horMatches = new ArrayList<>();
@@ -112,10 +147,12 @@ public class UnitMerger {
         return horMatches;
     }
 
-    /*Takes in a Optional<Unit> and returns:
-    * a AbstractMobileUnit if it is not empty
-    * null if it is empty
-    * */
+    /**
+     * Converts an Optional<Unit> to an AbstractMobileUnit if present.
+     *
+     * @param opt optional unit
+     * @return the abstract mobile unit or null if not present or not of the correct type
+     */
     public static AbstractMobileUnit optToAbUnit(Optional<Unit> opt) {
         if (opt.isEmpty()) {
             return null;
@@ -128,20 +165,22 @@ public class UnitMerger {
         return null;
     }
 
-    /*Takes in a Optional<Unit> and returns:
-     * a Unit if it is not empty
-     * null if it is empty
-     * */
+    /**
+     * Converts an Optional<Unit> to a Unit if present.
+     *
+     * @param opt optional unit
+     * @return the unit or null if not present
+     */
     public static Unit optToUnit(Optional<Unit> opt) {
         return opt.orElse(null);
 
     }
 
-    /*Rearrange the board in the following order (columnwise, from the center to other extreme):
-    * walls
-    * big units
-    * units
-    * */
+    /**
+     * Reorders the board vertically by category (walls, big units, units) going from center to the other vertical extreme.
+     *
+     * @param board the board to be collapsed
+     */
     public static void collapse(Board board) {
         int maxColumnIndex = board.getMaxColumnIndex();
         for (int i = 0; i <= maxColumnIndex; i++) {
@@ -150,6 +189,12 @@ public class UnitMerger {
         }
     }
 
+    /**
+     * Rearranges the upper half of the column (Player 2).
+     *
+     * @param board the board
+     * @param col the column index
+     */
     public static void columnManagerP2(Board board, int col) {
         int maxRowIndex = board.getMaxRowIndex() / 2;
         int currentRow = maxRowIndex;
@@ -177,20 +222,12 @@ public class UnitMerger {
         }
     }
 
-    private static void removeAndStoreUnits(Board board, int col, List<AbstractMobileUnit> smallUnits, List<AbstractMobileUnit> bigUnits, List<Wall> walls, int i) {
-        Unit unit = optToUnit(board.getUnit(i, col));
-        if (unit == null) return;
-        if (unit instanceof Wall) {
-            walls.add((Wall) unit);
-        }
-        if (unit instanceof AbstractMobileUnit && ((AbstractMobileUnit) unit).getAttackCountdown() != -1) {
-            bigUnits.add((AbstractMobileUnit) unit);
-        } else if (unit instanceof AbstractMobileUnit) {
-            smallUnits.add((AbstractMobileUnit) unit);
-        }
-        board.removeUnit(i, col);
-    }
-
+    /**
+     * Rearranges the lower half of the column.
+     *
+     * @param board the board
+     * @param col the column index
+     */
     public static void columnManagerP1(Board board, int col) {
         int maxRowIndex = board.getMaxRowIndex();
         int currentRow = maxRowIndex / 2 + 1;
@@ -219,6 +256,38 @@ public class UnitMerger {
 
         }
     }
+    /**
+     * Helper method that removes units and saves them in a list, to rearrange them later.
+     *
+     * @param board the board
+     * @param col the column index
+     * @param smallUnits list for small units
+     * @param bigUnits list for big units
+     * @param walls list for walls
+     * @param i row index
+     */
+    private static void removeAndStoreUnits(Board board, int col, List<AbstractMobileUnit> smallUnits, List<AbstractMobileUnit> bigUnits, List<Wall> walls, int i) {
+        Unit unit = optToUnit(board.getUnit(i, col));
+        if (unit == null) return;
+        if (unit instanceof Wall) {
+            walls.add((Wall) unit);
+        }
+        if (unit instanceof AbstractMobileUnit && ((AbstractMobileUnit) unit).getAttackCountdown() != -1) {
+            bigUnits.add((AbstractMobileUnit) unit);
+        } else if (unit instanceof AbstractMobileUnit) {
+            smallUnits.add((AbstractMobileUnit) unit);
+        }
+        board.removeUnit(i, col);
+    }
+
+
+    /**
+     * Merges three horizontally aligned units into a wall.
+     *
+     * @param board the board
+     * @param row row of the first unit
+     * @param col column of the first unit
+     */
 
     public static void mergeToWall(Board board, int row, int col) {
         board.removeUnit(row, col);
@@ -232,6 +301,13 @@ public class UnitMerger {
         board.addUnit(row, col + 2, wall);
     }
 
+    /**
+     * Merges three vertically aligned units into a big unit.
+     *
+     * @param board the board
+     * @param col column of the first unit
+     * @param row row of the first unit
+     */
     public static void mergeToBigUnit(Board board, int col, int row) {
         Optional<Unit> opt1 = board.getUnit(row, col);
         AbstractMobileUnit au1 = optToAbUnit(opt1);
@@ -248,4 +324,3 @@ public class UnitMerger {
         board.addUnit(row + 2, col, bigUnit);
     }
 }
-
