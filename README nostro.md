@@ -121,7 +121,7 @@ We only used Java’s standard libraries.
 
 Each member of the group created their own Git branch, each one of us worked on different classes and method and merged
 clean code into the Main branch regularly to avoid conflicts.
-As a result, we had conflicts (which have been resolved fairly easily) only a limited amount of times
+As a result, we had conflicts (which have been resolved fairly easily) only a limited amount of times.
 
 ### Challenges faced by each member
 
