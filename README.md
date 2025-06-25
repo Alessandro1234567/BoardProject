@@ -132,30 +132,29 @@ As a result, we had conflicts (which have been resolved fairly easily) only a li
 
 #### Alessandro Zago
 
-> During the development, I encountered several hurdles that affected efficiency and required focused analysis:
->
-> - **Project Structure**:  
+ During the development, I encountered several hurdles that affected efficiency and required focused analysis:
+
+ - **Project Structure**:  
     Understanding the interdependencies between modules took significant time. I traced folder hierarchies and entry
     points to identify how to implement feature changes.
->
-> #### Single Board Instance:
->
-> - **Advantage**:  
-    > Centralized state in `model/impl/RealEventHandler.doAttack()` made coordinating attack sequences straightforward
-    and reduced data duplication.
->
->- **Disadvantage**:  
-   > In `model/utils/UnitGenerator`, spawning units safely demanded extra synchronization and collision checks,
+
+ #### Single Board Instance:
+
+ - **Advantage**:  
+     Centralized state in `model/impl/RealEventHandler.doAttack()` made coordinating attack sequences straightforward
+    and reduced data duplication.>
+- **Disadvantage**:  
+    In `model/utils/UnitGenerator`, spawning units safely demanded extra synchronization and collision checks,
    increasing code complexity.
 
 #### Danial Davoodi
 
-> One of the difficulties I encountered while working on this project was the initial challenge of understanding how the
-> game’s code works, and I had to carefully read through the code and all the declarations and usages of the various
-> methods.
+ One of the difficulties I encountered while working on this project was the initial challenge of understanding how the
+ game’s code works, and I had to carefully read through the code and all the declarations and usages of the various
+ methods.
 
 #### Nicola Chen
 
-> The initial challenge was to become familiar with code written by another person, after that it was mainly about how to structure the class `UnitMerger`
-> and write clean, factorized and easy to read code
+ The initial challenge was to become familiar with code written by another person, after that it was mainly about how to structure the class `UnitMerger`
+ and write clean, factorized and easy to read code
 ---
