@@ -191,6 +191,9 @@ public class RealEventHandler implements EventHandler {
      * @param value max possible value
      */
     private void addReinforcementsMax(Snapshot.Player player, int value) {
+        if (((HeroImpl)snapshot.getHero(player)).getReinforcements() >= 10) {
+        return; 
+     }
         ((HeroImpl)snapshot.getHero(player)).setReinforcements(
                 ((HeroImpl)snapshot.getHero(player)).getReinforcements()
                         + ((int)(Math.random() * value) + 1));
