@@ -169,7 +169,7 @@ public class RealEventHandler implements EventHandler {
 
     @Override
     public void skipTurn() {
-        if(arePlayersAlive()){
+        if(arePlayersDead()){
             isGameOver();
             return;
         }
@@ -180,15 +180,17 @@ public class RealEventHandler implements EventHandler {
                 (snapshot),
                 "It's the turn of "+ (snapshot.getHero(snapshot.getActivePlayer())).getName()
         );
-        if(arePlayersAlive()){
+        if(arePlayersDead()){
             isGameOver();
         }
     }
 
     /**
-     * his auxiliary method gives the max number of reinforcements that could be spawned
-     * @param player the player who's getting the reinforcements
-     * @param value max possible value
+     * Adds a random number of reinforcements to the specified player, up to a given maximum value.
+     * The method will not add reinforcements if the player's current reinforcements are already 10 or more.
+     *
+     * @param player the player to whom reinforcements will be added
+     * @param value the upper bound (exclusive) for the random number of reinforcements to add
      */
     private void addReinforcementsMax(Snapshot.Player player, int value) {
         if (((HeroImpl)snapshot.getHero(player)).getReinforcements() >= 10) {
@@ -203,7 +205,7 @@ public class RealEventHandler implements EventHandler {
     //method that calls reinforcements
     @Override
     public void callReinforcement() {
-        if(arePlayersAlive()){
+        if(arePlayersDead()){
             isGameOver();
             return;
         }
@@ -248,7 +250,7 @@ public class RealEventHandler implements EventHandler {
     //method that gives information by hovering on unit
     @Override
     public void requestInformation(int rowIndex, int columnIndex) {
-        if(arePlayersAlive()){
+        if(arePlayersDead()){
             isGameOver();
             return;
         }
@@ -264,7 +266,7 @@ public class RealEventHandler implements EventHandler {
     //main method to move a unit
     @Override
     public void selectTile(int rowIndex, int columnIndex) {
-        if(arePlayersAlive()){
+        if(arePlayersDead()){
             isGameOver();
             return;
         }
@@ -345,10 +347,11 @@ public class RealEventHandler implements EventHandler {
     }
 
     /**
-     * Auxiliary method used to check if it's the current player's field
-     * @param activePlayer
-     * @param rowIndex
-     * @return boolean
+     * Checks if the specified row index corresponds to a field owned by the given player.
+     *
+     * @param activePlayer the player whose ownership is being checked
+     * @param rowIndex the index of the row to check
+     * @return true if the row belongs to the active player; false otherwise
      */
     private boolean isOwned(Snapshot.Player activePlayer, int rowIndex) {
         if (activePlayer == Snapshot.Player.FIRST) {
@@ -359,6 +362,16 @@ public class RealEventHandler implements EventHandler {
         return false;
     }
 
+    /**
+     * Moves a unit from one tile to another on the board, if the move is valid.
+     *
+     * If all checks pass, the unit is moved to the destination tile, the source tile is cleared,
+     * the board state is updated, and the player's remaining actions are decremented.
+     * If no actions remain after the move, the turn is automatically skipped.
+     *
+     * @param from the coordinates of the tile where the unit currently is
+     * @param to the coordinates of the tile where the unit should be moved
+     */
     private void moveUnit(Board.TileCoordinates from, Board.TileCoordinates to) {
         // control if I have remaining moves
         if (snapshot.getActionsRemaining() <= 0) {
@@ -413,9 +426,13 @@ public class RealEventHandler implements EventHandler {
     }
 
     /**
-     * auxiliary method used to move forward units near center of the map
-     * @param unit
-     * @param coordinates
+     * Moves the specified unit forward along its column towards the center of the map.
+     *
+     * The method scans along the column from the starting row towards the opponent's side,
+     * moving the unit to the first empty tile found.
+     *
+     * @param unit the unit to be moved forward
+     * @param coordinates the current coordinates of the unit
      */
     private void moveForward(Unit unit, Board.TileCoordinates coordinates) {
         int startRow = snapshot.getActivePlayer() == Snapshot.Player.FIRST ? 6 : 5;
@@ -436,7 +453,7 @@ public class RealEventHandler implements EventHandler {
     //Method to eliminate selected unit (right click)
     @Override
     public void deleteUnit(int rowIndex, int columnIndex) {
-        if(arePlayersAlive()){
+        if(arePlayersDead()){
             isGameOver();
             return;
         }
@@ -464,10 +481,12 @@ public class RealEventHandler implements EventHandler {
     }
 
     /**
-     * Method that counts the number of empty tiles on the board
-     * This metod is used as auxiliary method of call reinforcements
-     * @param player
-     * @return int
+     * Counts the number of empty tiles on the board within the territory of the specified player.
+     *
+     * This method is typically used as an auxiliary helper for reinforcement calculations.
+     *
+     * @param player the player whose territory's empty tiles are to be counted
+     * @return the total number of empty tiles in the player's territory
      */
     private int countEmptyTiles(Snapshot.Player player) {
         Board board = snapshot.getBoard();
@@ -494,9 +513,9 @@ public class RealEventHandler implements EventHandler {
 
     /**
      * Auxiliary method to check if the game has terminated
-     * @return boolean
+     * @return true if one of the players is dead, false otherwise
      */
-    private boolean arePlayersAlive(){
+    private boolean arePlayersDead(){
          return snapshot.getHero(Snapshot.Player.FIRST).getHealth() <= 0 || snapshot.getHero(Snapshot.Player.SECOND).getHealth() <= 0;
     }
 
