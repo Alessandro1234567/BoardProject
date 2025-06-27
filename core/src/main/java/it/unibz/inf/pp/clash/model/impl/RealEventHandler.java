@@ -187,7 +187,7 @@ public class RealEventHandler implements EventHandler {
 
     /**
      * Adds a random number of reinforcements to the specified player, up to a given maximum value.
-     * The method will not add reinforcements if the player's current reinforcements are already 10 or more.
+     * The method will not add reinforcements if the player's current reinforcements are already 5 or more.
      *
      * @param player the player to whom reinforcements will be added
      * @param value the upper bound (exclusive) for the random number of reinforcements to add
