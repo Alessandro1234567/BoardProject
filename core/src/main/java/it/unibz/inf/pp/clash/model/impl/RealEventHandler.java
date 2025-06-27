@@ -193,7 +193,7 @@ public class RealEventHandler implements EventHandler {
      * @param value the upper bound (exclusive) for the random number of reinforcements to add
      */
     private void addReinforcementsMax(Snapshot.Player player, int value) {
-        if (((HeroImpl)snapshot.getHero(player)).getReinforcements() >= 10) {
+        if (((HeroImpl)snapshot.getHero(player)).getReinforcements() >= 5) {
         return; 
      }
         ((HeroImpl)snapshot.getHero(player)).setReinforcements(
@@ -338,7 +338,7 @@ public class RealEventHandler implements EventHandler {
         if (isOwned(snapshot.getActivePlayer(), prevRow) &&
             snapshot.getBoard().getUnit(prevRow, clickedTile.columnIndex()).isEmpty()) {
 
-            // sposta verso il centro solo se la casella è nel territorio del giocatore
+            // moves to center only it the tile is in current player field
             if (isOwned(snapshot.getActivePlayer(), clickedTile.rowIndex())) {
                 Optional<Unit> movedUnit = snapshot.getBoard().getUnit(clickedTile.rowIndex(), clickedTile.columnIndex());
                 movedUnit.ifPresent(unit -> moveForward(unit, clickedTile));
